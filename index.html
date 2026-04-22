@@ -357,21 +357,33 @@ function pushScheduleToSW() {
 
 function buildNotifSchedule() {
   const THRESHOLDS = [
-    { ms: 86400000, label: '24 ore' },
-    { ms: 3*3600000, label: '3 ore' },
-    { ms: 3600000, label: "un'ora" },
+    {
+      ms: 86400000,
+      title: res => `${res.emoji} Domani scade un proposito!`,
+      body:  res => `Ricordati: "${res.text}" — avete ancora un giorno per farlo insieme 💕`,
+    },
+    {
+      ms: 3*3600000,
+      title: res => `${res.emoji} Mancano solo 3 ore!`,
+      body:  res => `"${res.text}" — sbrigatevi, il tempo stringe! ⏳`,
+    },
+    {
+      ms: 3600000,
+      title: res => `${res.emoji} Ultima ora!`,
+      body:  res => `Adesso o mai più: "${res.text}" scade tra meno di un'ora! 🚨`,
+    },
   ];
   const items = [];
   RESOLUTIONS.forEach(res => {
     const { isDone, periodEnd } = getState(res);
     if (isDone) return;
-    THRESHOLDS.forEach(({ ms, label }) => {
+    THRESHOLDS.forEach(({ ms, title, body }) => {
       const fireAt = periodEnd.getTime() - ms;
       if (fireAt <= Date.now()) return;
       items.push({
-        title: '⏰ Proposito in scadenza',
-        body: `"${res.text}" scade tra ${label}!`,
-        tag: `${res.id}-${ms}`,
+        title: title(res),
+        body:  body(res),
+        tag:   `${res.id}-${ms}`,
         fireAt,
       });
     });

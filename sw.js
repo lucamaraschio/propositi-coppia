@@ -55,7 +55,7 @@ function clearAllTimers() {
 }
 
 function scheduleAll(items) {
-  // items = [{ title, body, tag, fireAt }]
+  // items = [{ title, body, tag, fireAt, actions }]
   const now = Date.now();
   items.forEach(item => {
     const delay = item.fireAt - now;
@@ -66,8 +66,13 @@ function scheduleAll(items) {
         icon: './icon-192.png',
         badge: './icon-192.png',
         tag: item.tag,
-        renotify: false,
-        vibrate: [200, 100, 200],
+        renotify: true,
+        silent: false,
+        vibrate: [300, 150, 300, 150, 600],
+        requireInteraction: true,
+        actions: [
+          { action: 'open', title: 'Apri app' }
+        ]
       });
     }, delay);
     activeTimers.push(id);
