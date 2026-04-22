@@ -4,21 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Luca & Vanessa 💕</title>
-
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#141414">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Propositi 💕">
   <link rel="apple-touch-icon" href="icon-192.png">
-
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --bg: #141414;
@@ -32,123 +26,65 @@
       --card-blue:   #C0DCF5;
       --card-peach:  #F5D8C0;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--white);
+      background: var(--bg); color: var(--white);
       min-height: 100vh;
-      padding-bottom: 48px;
-      /* Safe area for iPhone notch/home bar */
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
-      padding-bottom: calc(48px + env(safe-area-inset-bottom));
     }
 
     /* ── Header ── */
     .header { padding: 56px 20px 20px; }
-
-    .header-top {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
+    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .header-greeting { font-size: 13px; font-weight: 600; color: #666; }
-
     .notif-btn {
-      width: 38px; height: 38px;
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
-      border-radius: 50%;
+      width: 38px; height: 38px; background: var(--pill-bg);
+      border: 1px solid var(--pill-border); border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 16px; cursor: pointer;
-      transition: background 0.2s;
     }
     .notif-btn.enabled { background: #C8EDD4; border-color: #C8EDD4; }
-
     .header-title { font-size: 34px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
     .header-title .accent { color: #F5C8D8; }
 
     /* ── Summary ── */
-    .summary {
-      display: flex; gap: 8px;
-      padding: 0 20px 20px;
-      overflow-x: auto; scrollbar-width: none;
-    }
+    .summary { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; scrollbar-width: none; }
     .summary::-webkit-scrollbar { display: none; }
-
-    .sum-pill {
-      flex-shrink: 0;
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
-      border-radius: 20px;
-      padding: 10px 16px;
-      display: flex; align-items: center; gap: 8px;
-    }
+    .sum-pill { flex-shrink: 0; background: var(--pill-bg); border: 1px solid var(--pill-border); border-radius: 20px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
     .sum-pill .num { font-size: 20px; font-weight: 800; line-height: 1; }
     .sum-pill .lbl { font-size: 11px; font-weight: 500; color: #666; }
 
-    /* ── Notification banner ── */
-    .notif-banner {
-      margin: 0 20px 14px;
-      background: #F5EAC0;
-      border-radius: 16px;
-      padding: 12px 16px;
-      display: flex; align-items: center; gap: 10px;
-      cursor: pointer;
+    /* ── Banners ── */
+    .notif-banner, .install-banner {
+      margin: 0 20px 14px; border-radius: 16px;
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer;
     }
-    .notif-banner.hidden { display: none; }
-    .notif-banner .icon { font-size: 20px; }
+    .notif-banner { background: #F5EAC0; }
+    .install-banner { background: #C8EDD4; }
+    .notif-banner.hidden, .install-banner.hidden { display: none; }
+    .notif-banner .icon, .install-banner .icon { font-size: 20px; }
     .notif-banner .msg { font-size: 12px; font-weight: 700; color: #333; line-height: 1.4; }
-    .notif-banner .msg span { color: #888; font-weight: 400; display: block; font-size: 11px; }
-
-    /* ── Install banner ── */
-    .install-banner {
-      margin: 0 20px 14px;
-      background: #C8EDD4;
-      border-radius: 16px;
-      padding: 12px 16px;
-      display: flex; align-items: center; gap: 10px;
-      cursor: pointer;
-    }
-    .install-banner.hidden { display: none; }
-    .install-banner .icon { font-size: 20px; }
     .install-banner .msg { font-size: 12px; font-weight: 700; color: #1a3a25; line-height: 1.4; }
+    .notif-banner .msg span { color: #888; font-weight: 400; display: block; font-size: 11px; }
     .install-banner .msg span { color: #3a6a4a; font-weight: 400; display: block; font-size: 11px; }
 
     /* ── Filter tabs ── */
-    .tabs-wrap {
-      overflow-x: auto; -webkit-overflow-scrolling: touch;
-      padding: 0 20px 16px; scrollbar-width: none;
-    }
+    .tabs-wrap { overflow-x: auto; padding: 0 20px 16px; scrollbar-width: none; }
     .tabs-wrap::-webkit-scrollbar { display: none; }
     .tabs { display: flex; gap: 6px; width: max-content; }
-
-    .tab {
-      padding: 8px 16px; border-radius: 20px;
-      border: 1px solid var(--pill-border);
-      background: transparent;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 12px; font-weight: 600; color: #666;
-      cursor: pointer; transition: all 0.2s; white-space: nowrap;
-    }
+    .tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--pill-border); background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 600; color: #666; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
     .tab.active { background: var(--white); color: #111; border-color: var(--white); }
 
     /* ── List ── */
     .list { padding: 4px 20px 0; display: flex; flex-direction: column; gap: 10px; }
 
     /* ── Card ── */
-    .card {
-      border-radius: 24px; padding: 20px;
-      position: relative; overflow: hidden;
-      transition: transform 0.15s;
-    }
-    .card:active { transform: scale(0.98); }
+    .card { border-radius: 24px; padding: 20px; position: relative; overflow: hidden; transition: transform 0.15s; }
+    .card:active { transform: scale(0.985); }
     .card.is-done { opacity: 0.5; }
-
     .card[data-color="pink"]   { background: var(--card-pink); }
     .card[data-color="green"]  { background: var(--card-green); }
     .card[data-color="yellow"] { background: var(--card-yellow); }
@@ -156,67 +92,161 @@
     .card[data-color="blue"]   { background: var(--card-blue); }
     .card[data-color="peach"]  { background: var(--card-peach); }
 
-    .card-top {
-      display: flex; justify-content: space-between;
-      align-items: flex-start; margin-bottom: 12px;
-    }
-
-    .card-freq-pill {
-      display: inline-flex;
-      background: rgba(0,0,0,0.1); border-radius: 20px;
-      padding: 4px 10px;
-      font-size: 10px; font-weight: 700; color: #111;
-      letter-spacing: 0.5px; text-transform: uppercase;
-    }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .card-top-left { display: flex; align-items: center; gap: 8px; }
+    .card-freq-pill { display: inline-flex; background: rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 10px; font-size: 10px; font-weight: 700; color: #111; letter-spacing: 0.5px; text-transform: uppercase; }
+    .card-top-right { display: flex; align-items: center; gap: 6px; }
 
     .card-check {
       width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(0,0,0,0.12);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-      flex-shrink: 0; border: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 700; color: #111;
+      background: rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer; transition: background 0.2s, transform 0.15s;
+      flex-shrink: 0; border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: #111;
     }
     .card-check:active { transform: scale(0.88); }
     .card-check.done { background: rgba(0,0,0,0.22); }
 
+    .card-settings-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center;
+      font-size: 13px; cursor: pointer; border: none; transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .card-settings-btn:active { background: rgba(0,0,0,0.18); }
+    .card-settings-btn.open { background: rgba(0,0,0,0.18); }
+
     .card-emoji { font-size: 32px; margin-bottom: 8px; display: block; }
     .card-text { font-size: 17px; font-weight: 700; line-height: 1.3; color: #111; margin-bottom: 4px; }
-    .card-note { font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.4); margin-bottom: 14px; font-style: italic; }
+    .card-note { font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.4); margin-bottom: 4px; font-style: italic; }
 
-    .card-footer {
-      display: flex; align-items: center;
-      justify-content: space-between; gap: 12px; margin-top: 12px;
-    }
-
+    .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
     .card-timer { font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.45); white-space: nowrap; }
     .card-timer.urgent { color: #B03030; }
-
     .progress-wrap { flex: 1; display: flex; align-items: center; gap: 6px; }
     .progress-bar { flex: 1; height: 5px; background: rgba(0,0,0,0.12); border-radius: 3px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 3px; background: rgba(0,0,0,0.3); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
     .progress-fill.done { background: rgba(0,0,0,0.5); }
     .progress-count { font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.4); white-space: nowrap; }
 
-    .card-multi-btn {
-      margin-top: 12px; width: 100%; padding: 10px; border-radius: 14px;
-      border: none; background: rgba(0,0,0,0.12); color: #111;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 13px; font-weight: 700; cursor: pointer;
-      transition: background 0.2s;
-    }
+    .card-multi-btn { margin-top: 12px; width: 100%; padding: 10px; border-radius: 14px; border: none; background: rgba(0,0,0,0.12); color: #111; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
     .card-multi-btn:active { background: rgba(0,0,0,0.22); }
-    .card-multi-btn.done { background: rgba(0,0,0,0.2); }
 
-    .btn-undo {
-      display: block; margin: 6px auto 0;
-      background: none; border: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.3);
-      cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+    .btn-undo { display: block; margin: 6px auto 0; background: none; border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.3); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── Card Settings Panel ── */
+    .card-settings-panel {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      display: none;
     }
+    .card-settings-panel.open { display: block; }
+
+    .settings-section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(0,0,0,0.4);
+      margin-bottom: 8px;
+    }
+
+    .notif-options { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .notif-option {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,0,0,0.08); border-radius: 12px;
+      padding: 5px 10px; cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.15s;
+    }
+    .notif-option.selected { background: rgba(0,0,0,0.18); border-color: rgba(0,0,0,0.3); }
+    .notif-option input { display: none; }
+    .notif-option span { font-size: 12px; font-weight: 600; color: #111; }
+
+    .custom-notif-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .custom-notif-row label { font-size: 12px; font-weight: 600; color: #111; white-space: nowrap; }
+    .custom-notif-input {
+      width: 60px; padding: 5px 8px; border-radius: 10px;
+      border: 1.5px solid rgba(0,0,0,0.2); background: rgba(0,0,0,0.06);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700;
+      color: #111; text-align: center;
+    }
+    .custom-notif-input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+
+    .btn-delete {
+      width: 100%; padding: 10px; border-radius: 14px; border: none;
+      background: rgba(180,40,40,0.12); color: #a02020;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-delete:active { background: rgba(180,40,40,0.22); }
+
+    /* ── FAB ── */
+    .fab {
+      position: fixed; bottom: calc(28px + env(safe-area-inset-bottom)); right: 24px;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: var(--white); color: #111;
+      font-size: 28px; font-weight: 300;
+      display: flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+      z-index: 100;
+    }
+    .fab:active { transform: scale(0.92); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: #1E1E1E; width: 100%; max-width: 520px;
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px calc(32px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-handle { width: 40px; height: 4px; background: #444; border-radius: 2px; margin: 0 auto 20px; }
+    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #666; margin-bottom: 8px; display: block; }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 12px 14px;
+      background: #2A2A2A; border: 1px solid #444; border-radius: 14px;
+      color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px; font-weight: 500;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #666; }
+    .form-select { appearance: none; }
+    .form-textarea { resize: none; min-height: 72px; }
+
+    .emoji-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .emoji-opt {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: #2A2A2A; border: 2px solid transparent;
+      font-size: 22px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .emoji-opt.selected { border-color: var(--white); background: #333; }
+
+    .form-row { display: flex; gap: 10px; }
+    .form-row .form-group { flex: 1; }
+
+    .btn-save {
+      width: 100%; padding: 14px; border-radius: 16px; border: none;
+      background: var(--white); color: #111;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800;
+      cursor: pointer; margin-top: 4px; transition: opacity 0.2s;
+    }
+    .btn-save:active { opacity: 0.8; }
 
     /* ── Empty ── */
     .empty { text-align: center; padding: 64px 20px; }
@@ -230,13 +260,7 @@
       70%  { opacity:1; transform: translate(-50%,-50%) scale(1.5); }
       100% { opacity:0; transform: translate(-50%,-50%) scale(1.8); }
     }
-    .celeb-burst {
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      font-size: 72px; pointer-events: none;
-      z-index: 999;
-      animation: celebPop 1.2s ease-out forwards;
-    }
+    .celeb-burst { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 72px; pointer-events: none; z-index: 999; animation: celebPop 1.2s ease-out forwards; }
   </style>
 </head>
 <body>
@@ -255,20 +279,13 @@
   <div class="sum-pill"><div class="num" id="sumUrgent">—</div><div class="lbl">In scadenza</div></div>
 </div>
 
-<!-- Banner: installa app -->
 <div class="install-banner hidden" id="installBanner">
   <div class="icon">📲</div>
-  <div class="msg">Aggiungi alla schermata home
-    <span>Toccami per installare l'app sul telefono</span>
-  </div>
+  <div class="msg">Aggiungi alla schermata home <span>Toccami per installare l'app sul telefono</span></div>
 </div>
-
-<!-- Banner: notifiche -->
 <div class="notif-banner hidden" id="notifBanner">
   <div class="icon">🔔</div>
-  <div class="msg">Attiva i promemoria
-    <span>Vi avvisiamo quando un proposito sta per scadere</span>
-  </div>
+  <div class="msg">Attiva i promemoria <span>Vi avvisiamo prima che un proposito scada</span></div>
 </div>
 
 <div class="tabs-wrap">
@@ -285,9 +302,54 @@
 
 <div class="list" id="list"></div>
 
+<button class="fab" id="fab">+</button>
+
+<!-- Add Resolution Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nuovo proposito ✨</div>
+
+    <div class="form-group">
+      <label class="form-label">Emoji</label>
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Descrizione</label>
+      <textarea class="form-textarea" id="newText" placeholder="Es. Cucinare insieme una ricetta nuova..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nota (opzionale)</label>
+      <input class="form-input" id="newNote" type="text" placeholder="Es. Magari il sabato sera">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Frequenza</label>
+        <select class="form-select" id="newFreq">
+          <option value="daily">Ogni giorno</option>
+          <option value="weekly" selected>Ogni settimana</option>
+          <option value="biweekly">Ogni 2 settimane</option>
+          <option value="monthly">Ogni mese</option>
+          <option value="bimonthly">Ogni 2 mesi</option>
+          <option value="quarterly">Ogni 3 mesi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Volte per periodo</label>
+        <input class="form-input" id="newTarget" type="number" min="1" max="30" value="1">
+      </div>
+    </div>
+
+    <button class="btn-save" id="btnSave">Aggiungi proposito</button>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
 
@@ -303,14 +365,85 @@ const firebaseConfig = {
 
 const fbApp = initializeApp(firebaseConfig);
 const db    = getDatabase(fbApp);
-let localData = {};
+let localData       = {};  // progress counts
+let customResolutions = []; // user-added resolutions
 
-async function loadFromFirebase() {
-  const snap = await get(ref(db, 'propositi'));
-  localData = snap.exists() ? snap.val() : {};
+// ── Default resolutions ───────────────────────────────────────────────────────
+
+const DEFAULT_RESOLUTIONS = [
+  { id:'r01', emoji:'💕', text:'Scopare una volta a settimana',                        frequency:'weekly',    target:1 },
+  { id:'r02', emoji:'📵', text:'Giornata senza telefono quando siamo a casa',          frequency:'monthly',   target:2, note:'La domenica?' },
+  { id:'r03', emoji:'🎲', text:'Provare qualcosa di nuovo insieme',                    frequency:'bimonthly', target:1, note:'Da stilare una lista di proposte' },
+  { id:'r04', emoji:'🌄', text:'Gita fuori porta insieme',                             frequency:'monthly',   target:1 },
+  { id:'r05', emoji:'💬', text:'Parlarci di come stiamo e come sta andando',           frequency:'monthly',   target:1, note:'Da fare quando facciamo il budget?' },
+  { id:'r06', emoji:'🍽️',  text:'Cena fuori in coppia',                                frequency:'monthly',   target:1 },
+  { id:'r07', emoji:'🌙', text:'Dirci cosa ci è piaciuto e cosa no di noi stessi',     frequency:'daily',     target:1 },
+  { id:'r08', emoji:'📺', text:'Una sera senza TV né telefono',                        frequency:'weekly',    target:1 },
+  { id:'r09', emoji:'🎬', text:'Andare al cinema',                                     frequency:'quarterly', target:1 },
+  { id:'r10', emoji:'💼', text:'Aggiornarci su lavoro in profondità',                  frequency:'biweekly',  target:1 },
+];
+
+const COLORS = ['pink','green','yellow','purple','blue','peach'];
+
+function allResolutions() {
+  return [...DEFAULT_RESOLUTIONS, ...customResolutions].map((r, i) => ({
+    ...r, color: COLORS[i % COLORS.length]
+  }));
+}
+
+const FREQ_LABEL = {
+  daily:'Ogni giorno', weekly:'Ogni settimana', biweekly:'Ogni 2 sett.',
+  monthly:'Ogni mese', bimonthly:'Ogni 2 mesi', quarterly:'Ogni 3 mesi',
+};
+
+// ── Notification preferences (per card, stored locally) ───────────────────────
+// notifPrefs[resId] = array of hours before expiry, e.g. [24, 3, 1]
+
+const NOTIF_PREFS_KEY = 'propositi_notif_prefs_v2';
+const DEFAULT_HOURS   = [24, 3, 1];
+
+function getNotifPrefs(resId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}');
+    return all[resId] ?? [...DEFAULT_HOURS];
+  } catch { return [...DEFAULT_HOURS]; }
+}
+
+function setNotifPrefs(resId, hours) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}');
+    all[resId] = hours;
+    localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(all));
+  } catch {}
+  pushScheduleToSW();
+}
+
+// ── Firebase load/save ────────────────────────────────────────────────────────
+
+async function loadAll() {
+  // Progress
+  const snap1 = await get(ref(db, 'propositi'));
+  localData = snap1.exists() ? snap1.val() : {};
+
+  // Custom resolutions
+  const snap2 = await get(ref(db, 'custom_resolutions'));
+  customResolutions = snap2.exists() ? Object.values(snap2.val()) : [];
+
   render();
   pushScheduleToSW();
 }
+
+// Listen for real-time changes from partner's phone
+onValue(ref(db, 'propositi'), snap => {
+  localData = snap.exists() ? snap.val() : {};
+  render();
+  pushScheduleToSW();
+});
+
+onValue(ref(db, 'custom_resolutions'), snap => {
+  customResolutions = snap.exists() ? Object.values(snap.val()) : [];
+  render();
+});
 
 function getCount(resId, periodKey) {
   return localData[resId]?.[periodKey] || 0;
@@ -324,96 +457,29 @@ async function setCount(resId, periodKey, count) {
   pushScheduleToSW();
 }
 
-// ── Service Worker ────────────────────────────────────────────────────────────
+async function addCustomResolution(res) {
+  customResolutions.push(res);
+  await set(ref(db, `custom_resolutions/${res.id}`), res);
+  render();
+}
 
-let swReg = null;
+async function deleteResolution(resId) {
+  // Remove from custom (default ones can't be truly deleted, just hidden)
+  customResolutions = customResolutions.filter(r => r.id !== resId);
+  await remove(ref(db, `custom_resolutions/${resId}`));
 
-async function registerSW() {
-  if (!('serviceWorker' in navigator)) return;
+  // For default ones, mark as hidden
+  const hidden = JSON.parse(localStorage.getItem('propositi_hidden') || '[]');
+  if (!hidden.includes(resId)) { hidden.push(resId); localStorage.setItem('propositi_hidden', JSON.stringify(hidden)); }
+
+  render();
+}
+
+function isHidden(resId) {
   try {
-    swReg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
-    // Listen for SW requesting schedule after activation
-    navigator.serviceWorker.addEventListener('message', e => {
-      if (e.data?.type === 'REQUEST_SCHEDULE') pushScheduleToSW();
-    });
-  } catch(err) {
-    console.warn('SW registration failed:', err);
-  }
+    return JSON.parse(localStorage.getItem('propositi_hidden') || '[]').includes(resId);
+  } catch { return false; }
 }
-
-// Build notification schedule and send to SW
-function pushScheduleToSW() {
-  if (!canNotify()) return;
-  const items = buildNotifSchedule();
-  // Store in localStorage as backup
-  localStorage.setItem('notif_schedule', JSON.stringify(items));
-  // Send to SW
-  if (swReg?.active) {
-    swReg.active.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', items });
-  } else if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', items });
-  }
-}
-
-function buildNotifSchedule() {
-  const THRESHOLDS = [
-    {
-      ms: 86400000,
-      title: res => `${res.emoji} Domani scade un proposito!`,
-      body:  res => `Ricordati: "${res.text}" — avete ancora un giorno per farlo insieme 💕`,
-    },
-    {
-      ms: 3*3600000,
-      title: res => `${res.emoji} Mancano solo 3 ore!`,
-      body:  res => `"${res.text}" — sbrigatevi, il tempo stringe! ⏳`,
-    },
-    {
-      ms: 3600000,
-      title: res => `${res.emoji} Ultima ora!`,
-      body:  res => `Adesso o mai più: "${res.text}" scade tra meno di un'ora! 🚨`,
-    },
-  ];
-  const items = [];
-  RESOLUTIONS.forEach(res => {
-    const { isDone, periodEnd } = getState(res);
-    if (isDone) return;
-    THRESHOLDS.forEach(({ ms, title, body }) => {
-      const fireAt = periodEnd.getTime() - ms;
-      if (fireAt <= Date.now()) return;
-      items.push({
-        title: title(res),
-        body:  body(res),
-        tag:   `${res.id}-${ms}`,
-        fireAt,
-      });
-    });
-  });
-  return items;
-}
-
-// ── Data ──────────────────────────────────────────────────────────────────────
-
-const COLORS = ['pink','green','yellow','purple','blue','peach'];
-
-const RESOLUTIONS = [
-  { id:'r01', emoji:'💕', text:'Scopare una volta a settimana',                         frequency:'weekly',    target:1 },
-  { id:'r02', emoji:'📵', text:'Giornata senza telefono quando siamo a casa',           frequency:'monthly',   target:2, note:'La domenica?' },
-  { id:'r03', emoji:'🎲', text:'Provare qualcosa di nuovo insieme',                     frequency:'bimonthly', target:1, note:'Da stilare una lista di proposte' },
-  { id:'r04', emoji:'🌄', text:'Gita fuori porta insieme',                              frequency:'monthly',   target:1 },
-  { id:'r05', emoji:'💬', text:'Parlarci di come stiamo e come sta andando',            frequency:'monthly',   target:1, note:'Da fare quando facciamo il budget?' },
-  { id:'r06', emoji:'🍽️',  text:'Cena fuori in coppia',                                 frequency:'monthly',   target:1 },
-  { id:'r07', emoji:'🌙', text:'Dirci cosa ci è piaciuto e cosa no di noi stessi',      frequency:'daily',     target:1 },
-  { id:'r08', emoji:'📺', text:'Una sera senza TV né telefono',                         frequency:'weekly',    target:1 },
-  { id:'r09', emoji:'🎬', text:'Andare al cinema',                                      frequency:'quarterly', target:1 },
-  { id:'r10', emoji:'💼', text:'Aggiornarci su lavoro in profondità',                   frequency:'biweekly',  target:1 },
-];
-
-RESOLUTIONS.forEach((r, i) => { r.color = COLORS[i % COLORS.length]; });
-
-const FREQ_LABEL = {
-  daily:'Ogni giorno', weekly:'Ogni settimana', biweekly:'Ogni 2 sett.',
-  monthly:'Ogni mese', bimonthly:'Ogni 2 mesi', quarterly:'Ogni 3 mesi',
-};
 
 // ── Period helpers ────────────────────────────────────────────────────────────
 
@@ -428,7 +494,7 @@ function getPeriodKey(freq, now = new Date()) {
   const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
   if (freq === 'daily')     return `d-${y}-${m}-${d}`;
   if (freq === 'weekly')    { const mo = monday(now); return `w-${mo.getFullYear()}-${mo.getMonth()}-${mo.getDate()}`; }
-  if (freq === 'biweekly')  { return `bw-${Math.floor(Math.floor((now-BW_REF)/604800000)/2)}`; }
+  if (freq === 'biweekly')  return `bw-${Math.floor(Math.floor((now-BW_REF)/604800000)/2)}`;
   if (freq === 'monthly')   return `m-${y}-${m}`;
   if (freq === 'bimonthly') return `bm-${y}-${Math.floor(m/2)}`;
   if (freq === 'quarterly') return `q-${y}-${Math.floor(m/3)}`;
@@ -437,7 +503,7 @@ function getPeriodKey(freq, now = new Date()) {
 function getPeriodEnd(freq, now = new Date()) {
   const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
   if (freq === 'daily')     { const e = new Date(y,m,d+1); e.setHours(0,0,0,0); return e; }
-  if (freq === 'weekly')    { return new Date(monday(now).getTime() + 7*86400000); }
+  if (freq === 'weekly')    return new Date(monday(now).getTime() + 7*86400000);
   if (freq === 'biweekly')  { const w = Math.floor((now-BW_REF)/604800000); return new Date(BW_REF.getTime()+(Math.floor(w/2)+1)*2*604800000); }
   if (freq === 'monthly')   return new Date(y, m+1, 1);
   if (freq === 'bimonthly') return new Date(y, (Math.floor(m/2)+1)*2, 1);
@@ -450,14 +516,14 @@ function formatTimeLeft(end) {
   const days  = Math.floor(diff/86400000);
   const hours = Math.floor((diff%86400000)/3600000);
   const mins  = Math.floor((diff%3600000)/60000);
-  if (days > 1)   return { text:`${days} giorni rimasti`, urgent:false, ms:diff };
-  if (days === 1) return { text:`1 giorno rimasto`,        urgent:true,  ms:diff };
-  if (hours > 0)  return { text:`${hours}h ${mins}m`,     urgent:true,  ms:diff };
-  return           { text:`${mins} min rimasti`,            urgent:true,  ms:diff };
+  if (days > 1)  return { text:`${days} giorni rimasti`, urgent:false, ms:diff };
+  if (days === 1) return { text:`1 giorno rimasto`,      urgent:true,  ms:diff };
+  if (hours > 0)  return { text:`${hours}h ${mins}m`,   urgent:true,  ms:diff };
+  return           { text:`${mins} min rimasti`,          urgent:true,  ms:diff };
 }
 
 function getState(res) {
-  const now       = new Date();
+  const now = new Date();
   const periodKey = getPeriodKey(res.frequency, now);
   const periodEnd = getPeriodEnd(res.frequency, now);
   const count     = getCount(res.id, periodKey);
@@ -476,6 +542,7 @@ function isUrgent(res) {
 }
 
 function matchFilter(res) {
+  if (isHidden(res.id) && !customResolutions.find(r => r.id === res.id)) return false;
   const { isDone } = getState(res);
   switch(currentFilter) {
     case 'pending':  return !isDone;
@@ -490,17 +557,35 @@ function matchFilter(res) {
 
 // ── Render ────────────────────────────────────────────────────────────────────
 
+const PRESET_HOURS = [48, 24, 3, 1];
+const PRESET_LABELS = { 48:'2 giorni prima', 24:'1 giorno prima', 3:'3 ore prima', 1:'1 ora prima' };
+
 function buildCard(res) {
   const { periodKey, count, isDone, timer } = getState(res);
-  const pct  = Math.min(1, count / res.target);
+  const pct = Math.min(1, count / res.target);
+  const prefs = getNotifPrefs(res.id);
+
   const card = document.createElement('div');
   card.className = `card ${isDone ? 'is-done' : ''}`;
   card.dataset.color = res.color;
 
+  // Build notif options HTML
+  const optionsHTML = PRESET_HOURS.map(h => `
+    <label class="notif-option ${prefs.includes(h) ? 'selected' : ''}">
+      <input type="checkbox" data-hours="${h}" ${prefs.includes(h) ? 'checked' : ''}>
+      <span>${PRESET_LABELS[h]}</span>
+    </label>
+  `).join('');
+
   card.innerHTML = `
     <div class="card-top">
-      <div class="card-freq-pill">${FREQ_LABEL[res.frequency]}</div>
-      <button class="card-check ${isDone?'done':''}">${isDone ? '✓' : '○'}</button>
+      <div class="card-top-left">
+        <div class="card-freq-pill">${FREQ_LABEL[res.frequency]}</div>
+      </div>
+      <div class="card-top-right">
+        <button class="card-settings-btn" title="Impostazioni">⚙️</button>
+        <button class="card-check ${isDone?'done':''}">${isDone ? '✓' : '○'}</button>
+      </div>
     </div>
     <span class="card-emoji">${res.emoji}</span>
     <div class="card-text">${res.text}</div>
@@ -514,12 +599,26 @@ function buildCard(res) {
     </div>
     ${res.target > 1 ? `<button class="card-multi-btn ${isDone?'done':''}">${isDone ? `✓ Fatto! (${count}/${res.target})` : `Segna completamento · ${count}/${res.target}`}</button>` : ''}
     ${count > 0 ? `<button class="btn-undo">↩ annulla</button>` : ''}
+
+    <!-- Settings Panel -->
+    <div class="card-settings-panel">
+      <div class="settings-section-label">🔔 Notificami</div>
+      <div class="notif-options">${optionsHTML}</div>
+      <div class="custom-notif-row">
+        <label>Personalizzato:</label>
+        <input class="custom-notif-input" type="number" min="1" max="720" placeholder="ore" id="custom-${res.id}">
+        <span style="font-size:12px;font-weight:600;color:#111;">ore prima</span>
+      </div>
+      <button class="btn-delete">🗑️ Elimina proposito</button>
+    </div>
   `;
 
+  // Check button
   card.querySelector('.card-check').addEventListener('click', () => {
     if (res.target === 1 && !isDone) { setCount(res.id, periodKey, 1); celebrate(); }
   });
 
+  // Multi target
   const multiBtn = card.querySelector('.card-multi-btn');
   if (multiBtn) multiBtn.addEventListener('click', () => {
     if (isDone) return;
@@ -527,10 +626,51 @@ function buildCard(res) {
     if (count + 1 >= res.target) celebrate();
   });
 
+  // Undo
   const undoBtn = card.querySelector('.btn-undo');
   if (undoBtn) undoBtn.addEventListener('click', e => {
     e.stopPropagation();
     setCount(res.id, periodKey, count - 1);
+  });
+
+  // Settings toggle
+  const settingsBtn = card.querySelector('.card-settings-btn');
+  const settingsPanel = card.querySelector('.card-settings-panel');
+  settingsBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = settingsPanel.classList.toggle('open');
+    settingsBtn.classList.toggle('open', isOpen);
+  });
+
+  // Notif preset checkboxes
+  card.querySelectorAll('.notif-option input').forEach(input => {
+    input.addEventListener('change', () => {
+      const hours = parseInt(input.dataset.hours);
+      let current = getNotifPrefs(res.id);
+      if (input.checked) { if (!current.includes(hours)) current.push(hours); }
+      else { current = current.filter(h => h !== hours); }
+      setNotifPrefs(res.id, current);
+      input.parentElement.classList.toggle('selected', input.checked);
+    });
+  });
+
+  // Custom hours input
+  const customInput = card.querySelector(`#custom-${res.id}`);
+  customInput.addEventListener('change', () => {
+    const h = parseInt(customInput.value);
+    if (!h || h < 1) return;
+    const current = getNotifPrefs(res.id);
+    if (!current.includes(h)) {
+      current.push(h);
+      setNotifPrefs(res.id, current);
+    }
+    customInput.value = '';
+  });
+
+  // Delete
+  card.querySelector('.btn-delete').addEventListener('click', e => {
+    e.stopPropagation();
+    if (confirm(`Eliminare "${res.text}"?`)) deleteResolution(res.id);
   });
 
   return card;
@@ -539,15 +679,16 @@ function buildCard(res) {
 function render() {
   const list = document.getElementById('list');
   list.innerHTML = '';
+  const res = allResolutions();
 
-  const total  = RESOLUTIONS.length;
-  const done   = RESOLUTIONS.filter(r => getState(r).isDone).length;
-  const urgent = RESOLUTIONS.filter(r => isUrgent(r)).length;
+  const total  = res.filter(r => !isHidden(r.id)).length;
+  const done   = res.filter(r => !isHidden(r.id) && getState(r).isDone).length;
+  const urgent = res.filter(r => !isHidden(r.id) && isUrgent(r)).length;
   document.getElementById('sumDone').textContent    = done;
   document.getElementById('sumPending').textContent = total - done;
   document.getElementById('sumUrgent').textContent  = urgent;
 
-  const visible = RESOLUTIONS.filter(matchFilter);
+  const visible = res.filter(matchFilter);
 
   if (!visible.length) {
     list.innerHTML = `<div class="empty"><div class="empty-emoji">🎉</div><h2>Tutto fatto!</h2><p>Siete meravigliosi 💕</p></div>`;
@@ -560,37 +701,83 @@ function render() {
     return getState(a).timer.ms - getState(b).timer.ms;
   });
 
-  visible.forEach(res => list.appendChild(buildCard(res)));
+  visible.forEach(r => list.appendChild(buildCard(r)));
 }
 
 // ── Celebrate ─────────────────────────────────────────────────────────────────
 
 function celebrate() {
   const burst = document.createElement('div');
-  burst.className = 'celeb-burst';
-  burst.textContent = '🎉';
+  burst.className = 'celeb-burst'; burst.textContent = '🎉';
   document.body.appendChild(burst);
   setTimeout(() => burst.remove(), 1300);
 }
 
-// ── Notifications ─────────────────────────────────────────────────────────────
+// ── Service Worker & Notifications ───────────────────────────────────────────
+
+let swReg = null;
+
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    swReg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data?.type === 'REQUEST_SCHEDULE') pushScheduleToSW();
+    });
+  } catch(err) { console.warn('SW failed:', err); }
+}
+
+function buildNotifSchedule() {
+  const items = [];
+  allResolutions().forEach(res => {
+    if (isHidden(res.id)) return;
+    const { isDone, periodEnd } = getState(res);
+    if (isDone) return;
+    const hoursPrefs = getNotifPrefs(res.id);
+
+    hoursPrefs.forEach(h => {
+      const fireAt = periodEnd.getTime() - h * 3600000;
+      if (fireAt <= Date.now()) return;
+
+      let title, body;
+      if (h >= 48) {
+        title = `${res.emoji} Mancano ${h/24} giorni!`;
+        body  = `Ricordati: "${res.text}" — avete ancora tempo 💕`;
+      } else if (h >= 24) {
+        title = `${res.emoji} Domani scade un proposito!`;
+        body  = `Ricordati: "${res.text}" — avete ancora oggi per farlo 💕`;
+      } else if (h >= 3) {
+        title = `${res.emoji} Mancano ${h} ore!`;
+        body  = `"${res.text}" — sbrigatevi, il tempo stringe! ⏳`;
+      } else {
+        title = `${res.emoji} Ultima ora!`;
+        body  = `"${res.text}" scade tra meno di un'ora! 🚨`;
+      }
+
+      items.push({ title, body, tag: `${res.id}-${h}`, fireAt });
+    });
+  });
+  return items;
+}
+
+function pushScheduleToSW() {
+  if (!canNotify()) return;
+  const items = buildNotifSchedule();
+  const send = (sw) => sw.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', items });
+  if (swReg?.active) send(swReg.active);
+  else if (navigator.serviceWorker?.controller) send(navigator.serviceWorker.controller);
+}
 
 function canNotify() {
   return 'Notification' in window && Notification.permission === 'granted';
 }
 
 async function requestNotifications() {
-  if (!('Notification' in window)) {
-    alert('Le notifiche non sono supportate su questo browser.\nProva ad installare l\'app sulla schermata home.');
-    return;
-  }
+  if (!('Notification' in window)) { alert('Installa l\'app sulla schermata home per ricevere notifiche.'); return; }
   const perm = await Notification.requestPermission();
   updateNotifUI();
-  if (perm === 'granted') {
-    pushScheduleToSW();
-  } else if (perm === 'denied') {
-    alert('Notifiche bloccate. Vai nelle impostazioni del browser per riattivarle.');
-  }
+  if (perm === 'granted') pushScheduleToSW();
+  else if (perm === 'denied') alert('Notifiche bloccate. Vai nelle impostazioni del browser per riattivarle.');
 }
 
 function updateNotifUI() {
@@ -598,40 +785,82 @@ function updateNotifUI() {
   const banner = document.getElementById('notifBanner');
   if (!('Notification' in window)) { banner.classList.add('hidden'); return; }
   if (canNotify()) {
-    btn.textContent = '🔔'; btn.classList.add('enabled');
-    banner.classList.add('hidden');
+    btn.textContent = '🔔'; btn.classList.add('enabled'); banner.classList.add('hidden');
   } else if (Notification.permission === 'denied') {
-    btn.textContent = '🔕'; btn.classList.remove('enabled');
-    banner.classList.add('hidden');
+    btn.textContent = '🔕'; btn.classList.remove('enabled'); banner.classList.add('hidden');
   } else {
-    btn.textContent = '🔔'; btn.classList.remove('enabled');
-    banner.classList.remove('hidden');
+    btn.textContent = '🔔'; btn.classList.remove('enabled'); banner.classList.remove('hidden');
   }
 }
 
 // ── PWA Install ───────────────────────────────────────────────────────────────
 
 let deferredPrompt = null;
-
 window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('installBanner').classList.remove('hidden');
 });
-
 document.getElementById('installBanner').addEventListener('click', async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
   deferredPrompt = null;
-  if (outcome === 'accepted') {
-    document.getElementById('installBanner').classList.add('hidden');
-  }
+  if (outcome === 'accepted') document.getElementById('installBanner').classList.add('hidden');
 });
 
-window.addEventListener('appinstalled', () => {
-  document.getElementById('installBanner').classList.add('hidden');
-  deferredPrompt = null;
+// ── Modal: add resolution ─────────────────────────────────────────────────────
+
+const EMOJI_LIST = ['💕','🌄','🍽️','🎲','💬','📵','🌙','📺','🎬','💼','🏃','🧘','📚','🎵','🌿','☕','🎨','🏠','✈️','🎁','🥂','🤝','🌸','⭐','🎯','🏋️','🧁','🎸'];
+
+let selectedEmoji = '💕';
+
+function initModal() {
+  const grid = document.getElementById('emojiGrid');
+  EMOJI_LIST.forEach(e => {
+    const div = document.createElement('div');
+    div.className = `emoji-opt ${e === selectedEmoji ? 'selected' : ''}`;
+    div.textContent = e;
+    div.addEventListener('click', () => {
+      selectedEmoji = e;
+      grid.querySelectorAll('.emoji-opt').forEach(d => d.classList.remove('selected'));
+      div.classList.add('selected');
+    });
+    grid.appendChild(div);
+  });
+}
+
+document.getElementById('fab').addEventListener('click', () => {
+  document.getElementById('modalOverlay').classList.add('open');
+});
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay'))
+    document.getElementById('modalOverlay').classList.remove('open');
+});
+
+document.getElementById('btnSave').addEventListener('click', async () => {
+  const text = document.getElementById('newText').value.trim();
+  if (!text) { alert('Inserisci una descrizione'); return; }
+  const note  = document.getElementById('newNote').value.trim();
+  const freq  = document.getElementById('newFreq').value;
+  const target = Math.max(1, parseInt(document.getElementById('newTarget').value) || 1);
+
+  const newRes = {
+    id: 'c-' + Date.now(),
+    emoji: selectedEmoji,
+    text, note: note || null,
+    frequency: freq, target,
+    custom: true,
+  };
+
+  await addCustomResolution(newRes);
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('newText').value = '';
+  document.getElementById('newNote').value = '';
+  document.getElementById('newTarget').value = '1';
+  document.getElementById('newFreq').value = 'weekly';
+  selectedEmoji = '💕';
+  document.querySelectorAll('.emoji-opt').forEach(d => d.classList.toggle('selected', d.textContent === '💕'));
 });
 
 // ── Tabs ──────────────────────────────────────────────────────────────────────
@@ -650,8 +879,9 @@ document.getElementById('notifBanner').addEventListener('click', requestNotifica
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
+initModal();
 await registerSW();
-await loadFromFirebase();
+await loadAll();
 updateNotifUI();
 setInterval(render, 60000);
 </script>
