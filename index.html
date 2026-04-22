@@ -16,15 +16,17 @@
   <style>
     :root {
       --bg: #141414;
+      --surface: #1E1E1E;
       --pill-bg: #2A2A2A;
       --pill-border: #333;
       --white: #FAFAFA;
-      --card-pink:   #F5C8D8;
-      --card-green:  #C8EDD4;
-      --card-yellow: #F5EAC0;
-      --card-purple: #DDD0F5;
-      --card-blue:   #C0DCF5;
-      --card-peach:  #F5D8C0;
+      /* Category colors */
+      --cat-intimacy:   #F5C8D8; /* pink      — Intimità      */
+      --cat-disconnect: #C8EDD4; /* green     — Disconnessione */
+      --cat-experience: #F5EAC0; /* yellow    — Esperienze     */
+      --cat-talk:       #C0DCF5; /* blue      — Comunicazione  */
+      --cat-outings:    #F5D8C0; /* peach     — Uscite         */
+      --cat-custom:     #DDD0F5; /* purple    — Custom         */
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -37,42 +39,39 @@
     }
 
     /* ── Header ── */
-    .header { padding: 56px 20px 20px; }
-    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .header { padding: 56px 20px 16px; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
     .header-greeting { font-size: 13px; font-weight: 600; color: #666; }
-    .notif-btn {
-      width: 38px; height: 38px; background: var(--pill-bg);
-      border: 1px solid var(--pill-border); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; cursor: pointer;
-    }
-    .notif-btn.enabled { background: #C8EDD4; border-color: #C8EDD4; }
+    .notif-btn { width: 38px; height: 38px; background: var(--pill-bg); border: 1px solid var(--pill-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+    .notif-btn.enabled { background: var(--cat-disconnect); border-color: var(--cat-disconnect); }
     .header-title { font-size: 34px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
-    .header-title .accent { color: #F5C8D8; }
+    .header-title .accent { color: var(--cat-intimacy); }
+
+    /* ── Category legend ── */
+    .legend { display: flex; gap: 6px; padding: 12px 20px 4px; overflow-x: auto; scrollbar-width: none; }
+    .legend::-webkit-scrollbar { display: none; }
+    .legend-pill { flex-shrink: 0; display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #111; cursor: pointer; transition: opacity 0.2s; }
+    .legend-pill.dim { opacity: 0.35; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
     /* ── Summary ── */
-    .summary { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; scrollbar-width: none; }
+    .summary { display: flex; gap: 8px; padding: 12px 20px 18px; overflow-x: auto; scrollbar-width: none; }
     .summary::-webkit-scrollbar { display: none; }
     .sum-pill { flex-shrink: 0; background: var(--pill-bg); border: 1px solid var(--pill-border); border-radius: 20px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
     .sum-pill .num { font-size: 20px; font-weight: 800; line-height: 1; }
     .sum-pill .lbl { font-size: 11px; font-weight: 500; color: #666; }
 
     /* ── Banners ── */
-    .notif-banner, .install-banner {
-      margin: 0 20px 14px; border-radius: 16px;
-      padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer;
-    }
-    .notif-banner { background: #F5EAC0; }
-    .install-banner { background: #C8EDD4; }
-    .notif-banner.hidden, .install-banner.hidden { display: none; }
-    .notif-banner .icon, .install-banner .icon { font-size: 20px; }
-    .notif-banner .msg { font-size: 12px; font-weight: 700; color: #333; line-height: 1.4; }
-    .install-banner .msg { font-size: 12px; font-weight: 700; color: #1a3a25; line-height: 1.4; }
-    .notif-banner .msg span { color: #888; font-weight: 400; display: block; font-size: 11px; }
-    .install-banner .msg span { color: #3a6a4a; font-weight: 400; display: block; font-size: 11px; }
+    .banner { margin: 0 20px 12px; border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .banner.hidden { display: none; }
+    .banner-notif { background: var(--cat-experience); }
+    .banner-install { background: var(--cat-disconnect); }
+    .banner .icon { font-size: 20px; }
+    .banner .msg { font-size: 12px; font-weight: 700; color: #222; line-height: 1.4; }
+    .banner .msg span { color: #555; font-weight: 400; display: block; font-size: 11px; margin-top: 1px; }
 
-    /* ── Filter tabs ── */
-    .tabs-wrap { overflow-x: auto; padding: 0 20px 16px; scrollbar-width: none; }
+    /* ── Tabs ── */
+    .tabs-wrap { overflow-x: auto; padding: 0 20px 14px; scrollbar-width: none; }
     .tabs-wrap::-webkit-scrollbar { display: none; }
     .tabs { display: flex; gap: 6px; width: max-content; }
     .tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--pill-border); background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 600; color: #666; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
@@ -85,34 +84,23 @@
     .card { border-radius: 24px; padding: 20px; position: relative; overflow: hidden; transition: transform 0.15s; }
     .card:active { transform: scale(0.985); }
     .card.is-done { opacity: 0.5; }
-    .card[data-color="pink"]   { background: var(--card-pink); }
-    .card[data-color="green"]  { background: var(--card-green); }
-    .card[data-color="yellow"] { background: var(--card-yellow); }
-    .card[data-color="purple"] { background: var(--card-purple); }
-    .card[data-color="blue"]   { background: var(--card-blue); }
-    .card[data-color="peach"]  { background: var(--card-peach); }
+    .card[data-cat="intimacy"]   { background: var(--cat-intimacy); }
+    .card[data-cat="disconnect"] { background: var(--cat-disconnect); }
+    .card[data-cat="experience"] { background: var(--cat-experience); }
+    .card[data-cat="talk"]       { background: var(--cat-talk); }
+    .card[data-cat="outings"]    { background: var(--cat-outings); }
+    .card[data-cat="custom"]     { background: var(--cat-custom); }
 
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-    .card-top-left { display: flex; align-items: center; gap: 8px; }
-    .card-freq-pill { display: inline-flex; background: rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 10px; font-size: 10px; font-weight: 700; color: #111; letter-spacing: 0.5px; text-transform: uppercase; }
+    .card-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .card-freq-pill { display: inline-flex; background: rgba(0,0,0,0.1); border-radius: 20px; padding: 4px 10px; font-size: 10px; font-weight: 700; color: #111; letter-spacing: 0.4px; text-transform: uppercase; }
+    .card-cat-pill { display: inline-flex; background: rgba(0,0,0,0.07); border-radius: 20px; padding: 4px 8px; font-size: 10px; font-weight: 600; color: rgba(0,0,0,0.5); }
     .card-top-right { display: flex; align-items: center; gap: 6px; }
 
-    .card-check {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;
-      font-size: 14px; cursor: pointer; transition: background 0.2s, transform 0.15s;
-      flex-shrink: 0; border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: #111;
-    }
+    .card-check { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: #111; flex-shrink: 0; transition: background 0.2s, transform 0.15s; }
     .card-check:active { transform: scale(0.88); }
     .card-check.done { background: rgba(0,0,0,0.22); }
-
-    .card-settings-btn {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center;
-      font-size: 13px; cursor: pointer; border: none; transition: background 0.2s;
-      flex-shrink: 0;
-    }
-    .card-settings-btn:active { background: rgba(0,0,0,0.18); }
+    .card-settings-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; border: none; flex-shrink: 0; transition: background 0.2s; }
     .card-settings-btn.open { background: rgba(0,0,0,0.18); }
 
     .card-emoji { font-size: 32px; margin-bottom: 8px; display: block; }
@@ -128,124 +116,71 @@
     .progress-fill.done { background: rgba(0,0,0,0.5); }
     .progress-count { font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.4); white-space: nowrap; }
 
-    .card-multi-btn { margin-top: 12px; width: 100%; padding: 10px; border-radius: 14px; border: none; background: rgba(0,0,0,0.12); color: #111; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
-    .card-multi-btn:active { background: rgba(0,0,0,0.22); }
-
+    .card-multi-btn { margin-top: 12px; width: 100%; padding: 10px; border-radius: 14px; border: none; background: rgba(0,0,0,0.12); color: #111; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .card-multi-btn:active { background: rgba(0,0,0,0.2); }
     .btn-undo { display: block; margin: 6px auto 0; background: none; border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.3); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 
-    /* ── Card Settings Panel ── */
-    .card-settings-panel {
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(0,0,0,0.12);
-      display: none;
-    }
+    /* ── Settings Panel ── */
+    .card-settings-panel { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,0.12); display: none; }
     .card-settings-panel.open { display: block; }
+    .settings-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(0,0,0,0.4); margin-bottom: 8px; display: block; }
 
-    .settings-section-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 1px;
-      text-transform: uppercase; color: rgba(0,0,0,0.4);
-      margin-bottom: 8px;
-    }
+    /* Preset chips */
+    .preset-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .preset-chip { display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.08); border-radius: 12px; padding: 6px 11px; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; user-select: none; }
+    .preset-chip.on { background: rgba(0,0,0,0.18); border-color: rgba(0,0,0,0.3); }
+    .preset-chip span { font-size: 12px; font-weight: 600; color: #111; }
 
-    .notif-options { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .notif-option {
-      display: flex; align-items: center; gap: 5px;
-      background: rgba(0,0,0,0.08); border-radius: 12px;
-      padding: 5px 10px; cursor: pointer;
-      border: 1.5px solid transparent;
-      transition: all 0.15s;
-    }
-    .notif-option.selected { background: rgba(0,0,0,0.18); border-color: rgba(0,0,0,0.3); }
-    .notif-option input { display: none; }
-    .notif-option span { font-size: 12px; font-weight: 600; color: #111; }
+    /* Time picker */
+    .time-picker-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .time-picker-label { font-size: 12px; font-weight: 600; color: #111; white-space: nowrap; flex-shrink: 0; }
+    .time-selects { display: flex; align-items: center; gap: 4px; flex: 1; }
+    .time-sel { background: rgba(0,0,0,0.08); border: 1.5px solid rgba(0,0,0,0.15); border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: #111; padding: 6px 8px; cursor: pointer; appearance: none; -webkit-appearance: none; text-align: center; }
+    .time-sel:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .time-colon { font-size: 15px; font-weight: 700; color: rgba(0,0,0,0.4); }
+    .btn-add-time { flex-shrink: 0; padding: 7px 14px; border-radius: 10px; border: none; background: rgba(0,0,0,0.15); color: #111; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-add-time:active { background: rgba(0,0,0,0.25); }
 
-    .custom-notif-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-    .custom-notif-row label { font-size: 12px; font-weight: 600; color: #111; white-space: nowrap; }
-    .custom-notif-input {
-      width: 60px; padding: 5px 8px; border-radius: 10px;
-      border: 1.5px solid rgba(0,0,0,0.2); background: rgba(0,0,0,0.06);
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700;
-      color: #111; text-align: center;
-    }
-    .custom-notif-input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    /* Custom time tags */
+    .custom-times { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; min-height: 0; }
+    .custom-time-tag { display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.12); border-radius: 10px; padding: 4px 8px; font-size: 11px; font-weight: 600; color: #111; }
+    .custom-time-tag button { background: none; border: none; color: rgba(0,0,0,0.4); cursor: pointer; font-size: 13px; padding: 0; line-height: 1; }
 
-    .btn-delete {
-      width: 100%; padding: 10px; border-radius: 14px; border: none;
-      background: rgba(180,40,40,0.12); color: #a02020;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: background 0.2s;
-    }
+    .btn-delete { width: 100%; padding: 10px; border-radius: 14px; border: none; background: rgba(180,40,40,0.12); color: #a02020; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
     .btn-delete:active { background: rgba(180,40,40,0.22); }
 
     /* ── FAB ── */
-    .fab {
-      position: fixed; bottom: calc(28px + env(safe-area-inset-bottom)); right: 24px;
-      width: 58px; height: 58px; border-radius: 50%;
-      background: var(--white); color: #111;
-      font-size: 28px; font-weight: 300;
-      display: flex; align-items: center; justify-content: center;
-      border: none; cursor: pointer;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-      transition: transform 0.2s;
-      z-index: 100;
-    }
+    .fab { position: fixed; bottom: calc(28px + env(safe-area-inset-bottom)); right: 24px; width: 58px; height: 58px; border-radius: 50%; background: var(--white); color: #111; font-size: 28px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 4px 24px rgba(0,0,0,0.5); z-index: 100; transition: transform 0.2s; }
     .fab:active { transform: scale(0.92); }
 
     /* ── Modal ── */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex; align-items: flex-end; justify-content: center;
-      z-index: 200; opacity: 0; pointer-events: none;
-      transition: opacity 0.25s;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: flex; align-items: flex-end; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-    .modal {
-      background: #1E1E1E; width: 100%; max-width: 520px;
-      border-radius: 28px 28px 0 0;
-      padding: 24px 20px calc(32px + env(safe-area-inset-bottom));
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-      max-height: 90vh; overflow-y: auto;
-    }
+    .modal { background: #1E1E1E; width: 100%; max-width: 520px; border-radius: 28px 28px 0 0; padding: 24px 20px calc(32px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); max-height: 92vh; overflow-y: auto; }
     .modal-overlay.open .modal { transform: translateY(0); }
-
     .modal-handle { width: 40px; height: 4px; background: #444; border-radius: 2px; margin: 0 auto 20px; }
     .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
 
     .form-group { margin-bottom: 16px; }
     .form-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #666; margin-bottom: 8px; display: block; }
-
-    .form-input, .form-select, .form-textarea {
-      width: 100%; padding: 12px 14px;
-      background: #2A2A2A; border: 1px solid #444; border-radius: 14px;
-      color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 15px; font-weight: 500;
-    }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 14px; background: #2A2A2A; border: 1px solid #444; border-radius: 14px; color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 500; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #666; }
     .form-select { appearance: none; }
     .form-textarea { resize: none; min-height: 72px; }
-
-    .emoji-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-    .emoji-opt {
-      width: 42px; height: 42px; border-radius: 12px;
-      background: #2A2A2A; border: 2px solid transparent;
-      font-size: 22px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .emoji-opt.selected { border-color: var(--white); background: #333; }
-
     .form-row { display: flex; gap: 10px; }
     .form-row .form-group { flex: 1; }
 
-    .btn-save {
-      width: 100%; padding: 14px; border-radius: 16px; border: none;
-      background: var(--white); color: #111;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800;
-      cursor: pointer; margin-top: 4px; transition: opacity 0.2s;
-    }
+    /* emoji grid */
+    .emoji-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .emoji-opt { width: 42px; height: 42px; border-radius: 12px; background: #2A2A2A; border: 2px solid transparent; font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+    .emoji-opt.selected { border-color: var(--white); background: #333; }
+
+    /* category selector in modal */
+    .cat-selector { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-opt { flex: 1; min-width: 80px; padding: 10px 8px; border-radius: 14px; border: 2px solid transparent; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 700; color: #111; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .cat-opt.selected { border-color: rgba(0,0,0,0.4); }
+
+    .btn-save { width: 100%; padding: 14px; border-radius: 16px; border: none; background: var(--white); color: #111; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px; }
     .btn-save:active { opacity: 0.8; }
 
     /* ── Empty ── */
@@ -254,7 +189,6 @@
     .empty h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
     .empty p { font-size: 13px; color: #666; }
 
-    /* ── Celebration ── */
     @keyframes celebPop {
       0%   { opacity:1; transform: translate(-50%,-50%) scale(1); }
       70%  { opacity:1; transform: translate(-50%,-50%) scale(1.5); }
@@ -273,19 +207,22 @@
   <div class="header-title">I vostri<br><span class="accent">Propositi</span> 💕</div>
 </div>
 
+<!-- Category legend -->
+<div class="legend" id="legend"></div>
+
 <div class="summary">
   <div class="sum-pill"><div class="num" id="sumDone">—</div><div class="lbl">Completati</div></div>
   <div class="sum-pill"><div class="num" id="sumPending">—</div><div class="lbl">Da fare</div></div>
   <div class="sum-pill"><div class="num" id="sumUrgent">—</div><div class="lbl">In scadenza</div></div>
 </div>
 
-<div class="install-banner hidden" id="installBanner">
+<div class="banner banner-install hidden" id="installBanner">
   <div class="icon">📲</div>
-  <div class="msg">Aggiungi alla schermata home <span>Toccami per installare l'app sul telefono</span></div>
+  <div class="msg">Aggiungi alla schermata home <span>Tocca per installare l'app</span></div>
 </div>
-<div class="notif-banner hidden" id="notifBanner">
+<div class="banner banner-notif hidden" id="notifBanner">
   <div class="icon">🔔</div>
-  <div class="msg">Attiva i promemoria <span>Vi avvisiamo prima che un proposito scada</span></div>
+  <div class="msg">Attiva i promemoria <span>Ricevi notifiche prima che un proposito scada</span></div>
 </div>
 
 <div class="tabs-wrap">
@@ -301,14 +238,18 @@
 </div>
 
 <div class="list" id="list"></div>
-
 <button class="fab" id="fab">+</button>
 
-<!-- Add Resolution Modal -->
+<!-- Add Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nuovo proposito ✨</div>
+
+    <div class="form-group">
+      <label class="form-label">Categoria</label>
+      <div class="cat-selector" id="catSelector"></div>
+    </div>
 
     <div class="form-group">
       <label class="form-label">Emoji</label>
@@ -317,7 +258,7 @@
 
     <div class="form-group">
       <label class="form-label">Descrizione</label>
-      <textarea class="form-textarea" id="newText" placeholder="Es. Cucinare insieme una ricetta nuova..."></textarea>
+      <textarea class="form-textarea" id="newText" placeholder="Es. Cucinare insieme una ricetta nuova…"></textarea>
     </div>
 
     <div class="form-group">
@@ -338,7 +279,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Volte per periodo</label>
+        <label class="form-label">Volte / periodo</label>
         <input class="form-input" id="newTarget" type="number" min="1" max="30" value="1">
       </div>
     </div>
@@ -348,11 +289,10 @@
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
-
 const firebaseConfig = {
   apiKey: "AIzaSyBqa-_PGzgJao0ao4mkjSf7hYOdwamsWUs",
   authDomain: "propositi-coppia.firebaseapp.com",
@@ -362,33 +302,37 @@ const firebaseConfig = {
   messagingSenderId: "231595342369",
   appId: "1:231595342369:web:a997b2cfc9738b7c6fc160"
 };
-
 const fbApp = initializeApp(firebaseConfig);
 const db    = getDatabase(fbApp);
-let localData       = {};  // progress counts
-let customResolutions = []; // user-added resolutions
+let localData        = {};
+let customResolutions = [];
+
+// ── Categories ────────────────────────────────────────────────────────────────
+const CATEGORIES = {
+  intimacy:   { label: 'Intimità',       emoji: '💗', color: '#F5C8D8' },
+  disconnect: { label: 'Disconnessione', emoji: '📵', color: '#C8EDD4' },
+  experience: { label: 'Esperienze',     emoji: '🌟', color: '#F5EAC0' },
+  talk:       { label: 'Comunicazione',  emoji: '💬', color: '#C0DCF5' },
+  outings:    { label: 'Uscite',         emoji: '🍽️', color: '#F5D8C0' },
+  custom:     { label: 'Personalizzato', emoji: '⭐', color: '#DDD0F5' },
+};
 
 // ── Default resolutions ───────────────────────────────────────────────────────
-
 const DEFAULT_RESOLUTIONS = [
-  { id:'r01', emoji:'💕', text:'Scopare una volta a settimana',                        frequency:'weekly',    target:1 },
-  { id:'r02', emoji:'📵', text:'Giornata senza telefono quando siamo a casa',          frequency:'monthly',   target:2, note:'La domenica?' },
-  { id:'r03', emoji:'🎲', text:'Provare qualcosa di nuovo insieme',                    frequency:'bimonthly', target:1, note:'Da stilare una lista di proposte' },
-  { id:'r04', emoji:'🌄', text:'Gita fuori porta insieme',                             frequency:'monthly',   target:1 },
-  { id:'r05', emoji:'💬', text:'Parlarci di come stiamo e come sta andando',           frequency:'monthly',   target:1, note:'Da fare quando facciamo il budget?' },
-  { id:'r06', emoji:'🍽️',  text:'Cena fuori in coppia',                                frequency:'monthly',   target:1 },
-  { id:'r07', emoji:'🌙', text:'Dirci cosa ci è piaciuto e cosa no di noi stessi',     frequency:'daily',     target:1 },
-  { id:'r08', emoji:'📺', text:'Una sera senza TV né telefono',                        frequency:'weekly',    target:1 },
-  { id:'r09', emoji:'🎬', text:'Andare al cinema',                                     frequency:'quarterly', target:1 },
-  { id:'r10', emoji:'💼', text:'Aggiornarci su lavoro in profondità',                  frequency:'biweekly',  target:1 },
+  { id:'r01', emoji:'💕', text:'Scopare una volta a settimana',               frequency:'weekly',    target:1, category:'intimacy'   },
+  { id:'r02', emoji:'📵', text:'Giornata senza telefono quando siamo a casa', frequency:'monthly',   target:2, category:'disconnect', note:'La domenica?' },
+  { id:'r03', emoji:'🎲', text:'Provare qualcosa di nuovo insieme',           frequency:'bimonthly', target:1, category:'experience', note:'Da stilare una lista di proposte' },
+  { id:'r04', emoji:'🌄', text:'Gita fuori porta insieme',                    frequency:'monthly',   target:1, category:'experience' },
+  { id:'r05', emoji:'💬', text:'Parlarci di come stiamo e come sta andando',  frequency:'monthly',   target:1, category:'talk',       note:'Da fare quando facciamo il budget?' },
+  { id:'r06', emoji:'🍽️',  text:'Cena fuori in coppia',                       frequency:'monthly',   target:1, category:'outings'    },
+  { id:'r07', emoji:'🌙', text:'Dirci cosa ci è piaciuto e cosa no',          frequency:'daily',     target:1, category:'talk'       },
+  { id:'r08', emoji:'📺', text:'Una sera senza TV né telefono',               frequency:'weekly',    target:1, category:'disconnect' },
+  { id:'r09', emoji:'🎬', text:'Andare al cinema',                            frequency:'quarterly', target:1, category:'experience' },
+  { id:'r10', emoji:'💼', text:'Aggiornarci su lavoro in profondità',         frequency:'biweekly',  target:1, category:'talk'       },
 ];
 
-const COLORS = ['pink','green','yellow','purple','blue','peach'];
-
 function allResolutions() {
-  return [...DEFAULT_RESOLUTIONS, ...customResolutions].map((r, i) => ({
-    ...r, color: COLORS[i % COLORS.length]
-  }));
+  return [...DEFAULT_RESOLUTIONS, ...customResolutions];
 }
 
 const FREQ_LABEL = {
@@ -396,97 +340,102 @@ const FREQ_LABEL = {
   monthly:'Ogni mese', bimonthly:'Ogni 2 mesi', quarterly:'Ogni 3 mesi',
 };
 
-// ── Notification preferences (per card, stored locally) ───────────────────────
-// notifPrefs[resId] = array of hours before expiry, e.g. [24, 3, 1]
+// ── Notification preferences ──────────────────────────────────────────────────
+// Stored as minutes-before: [1440, 180, 120, 60] (= 24h, 3h, 2h, 1h)
+const NOTIF_KEY      = 'propositi_notif_v3';
+const DEFAULT_MINS   = [1440, 180, 60]; // 24h, 3h, 1h
 
-const NOTIF_PREFS_KEY = 'propositi_notif_prefs_v2';
-const DEFAULT_HOURS   = [24, 3, 1];
+const PRESETS = [
+  { mins: 2880, label: '2 giorni prima' },
+  { mins: 1440, label: '1 giorno prima' },
+  { mins: 360,  label: '6 ore prima'    },
+  { mins: 180,  label: '3 ore prima'    },
+  { mins: 120,  label: '2 ore prima'    },
+  { mins: 60,   label: '1 ora prima'    },
+];
 
 function getNotifPrefs(resId) {
   try {
-    const all = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}');
-    return all[resId] ?? [...DEFAULT_HOURS];
-  } catch { return [...DEFAULT_HOURS]; }
+    const all = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
+    return Array.isArray(all[resId]) ? all[resId] : [...DEFAULT_MINS];
+  } catch { return [...DEFAULT_MINS]; }
 }
 
-function setNotifPrefs(resId, hours) {
+function setNotifPrefs(resId, mins) {
   try {
-    const all = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}');
-    all[resId] = hours;
-    localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(all));
+    const all = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
+    all[resId] = mins.filter(m => m > 0).sort((a,b) => b-a);
+    localStorage.setItem(NOTIF_KEY, JSON.stringify(all));
   } catch {}
   pushScheduleToSW();
 }
 
-// ── Firebase load/save ────────────────────────────────────────────────────────
+function formatMins(m) {
+  const h = Math.floor(m / 60), min = m % 60;
+  if (min === 0) return h === 1 ? '1 ora prima' : `${h} ore prima`;
+  if (h === 0)   return `${min} min prima`;
+  return `${h}h ${min}m prima`;
+}
 
+// ── Firebase load/sync ────────────────────────────────────────────────────────
 async function loadAll() {
-  // Progress
-  const snap1 = await get(ref(db, 'propositi'));
-  localData = snap1.exists() ? snap1.val() : {};
-
-  // Custom resolutions
-  const snap2 = await get(ref(db, 'custom_resolutions'));
-  customResolutions = snap2.exists() ? Object.values(snap2.val()) : [];
-
+  const [s1, s2] = await Promise.all([
+    get(ref(db, 'propositi')),
+    get(ref(db, 'custom_resolutions')),
+  ]);
+  localData         = s1.exists() ? s1.val() : {};
+  customResolutions = s2.exists() ? Object.values(s2.val()) : [];
   render();
   pushScheduleToSW();
 }
 
-// Listen for real-time changes from partner's phone
+// Real-time sync
 onValue(ref(db, 'propositi'), snap => {
   localData = snap.exists() ? snap.val() : {};
-  render();
-  pushScheduleToSW();
+  render(); pushScheduleToSW();
 });
-
 onValue(ref(db, 'custom_resolutions'), snap => {
   customResolutions = snap.exists() ? Object.values(snap.val()) : [];
   render();
 });
 
-function getCount(resId, periodKey) {
-  return localData[resId]?.[periodKey] || 0;
-}
+function getCount(id, pk)   { return localData[id]?.[pk] || 0; }
 
-async function setCount(resId, periodKey, count) {
-  if (!localData[resId]) localData[resId] = {};
-  localData[resId][periodKey] = Math.max(0, count);
+async function setCount(id, pk, count) {
+  if (!localData[id]) localData[id] = {};
+  localData[id][pk] = Math.max(0, count);
   render();
-  await set(ref(db, `propositi/${resId}/${periodKey}`), Math.max(0, count));
+  await set(ref(db, `propositi/${id}/${pk}`), Math.max(0, count));
   pushScheduleToSW();
 }
 
-async function addCustomResolution(res) {
-  customResolutions.push(res);
+async function addCustom(res) {
+  customResolutions = [...customResolutions.filter(r => r.id !== res.id), res];
   await set(ref(db, `custom_resolutions/${res.id}`), res);
   render();
 }
 
-async function deleteResolution(resId) {
-  // Remove from custom (default ones can't be truly deleted, just hidden)
-  customResolutions = customResolutions.filter(r => r.id !== resId);
-  await remove(ref(db, `custom_resolutions/${resId}`));
-
-  // For default ones, mark as hidden
-  const hidden = JSON.parse(localStorage.getItem('propositi_hidden') || '[]');
-  if (!hidden.includes(resId)) { hidden.push(resId); localStorage.setItem('propositi_hidden', JSON.stringify(hidden)); }
-
+async function deleteResolution(id) {
+  const isCustom = customResolutions.find(r => r.id === id);
+  if (isCustom) {
+    customResolutions = customResolutions.filter(r => r.id !== id);
+    await remove(ref(db, `custom_resolutions/${id}`));
+  }
+  // For defaults: mark hidden in localStorage
+  const hidden = getHidden();
+  if (!hidden.includes(id)) { hidden.push(id); saveHidden(hidden); }
   render();
 }
 
-function isHidden(resId) {
-  try {
-    return JSON.parse(localStorage.getItem('propositi_hidden') || '[]').includes(resId);
-  } catch { return false; }
-}
+function getHidden()   { try { return JSON.parse(localStorage.getItem('propositi_hidden') || '[]'); } catch { return []; } }
+function saveHidden(h) { localStorage.setItem('propositi_hidden', JSON.stringify(h)); }
+function isHidden(id)  { return getHidden().includes(id); }
 
 // ── Period helpers ────────────────────────────────────────────────────────────
-
 function monday(d) {
-  const date = new Date(d), day = date.getDay();
-  date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
-  date.setHours(0,0,0,0); return date;
+  const dt = new Date(d), day = dt.getDay();
+  dt.setDate(dt.getDate() - (day === 0 ? 6 : day - 1));
+  dt.setHours(0,0,0,0); return dt;
 }
 const BW_REF = new Date('2026-01-05');
 
@@ -513,36 +462,31 @@ function getPeriodEnd(freq, now = new Date()) {
 function formatTimeLeft(end) {
   const diff = end - Date.now();
   if (diff <= 0) return { text:'Scaduto', urgent:true, ms:0 };
-  const days  = Math.floor(diff/86400000);
-  const hours = Math.floor((diff%86400000)/3600000);
-  const mins  = Math.floor((diff%3600000)/60000);
-  if (days > 1)  return { text:`${days} giorni rimasti`, urgent:false, ms:diff };
-  if (days === 1) return { text:`1 giorno rimasto`,      urgent:true,  ms:diff };
-  if (hours > 0)  return { text:`${hours}h ${mins}m`,   urgent:true,  ms:diff };
-  return           { text:`${mins} min rimasti`,          urgent:true,  ms:diff };
+  const days = Math.floor(diff/86400000), hours = Math.floor((diff%86400000)/3600000), mins = Math.floor((diff%3600000)/60000);
+  if (days > 1)   return { text:`${days} giorni rimasti`, urgent:false, ms:diff };
+  if (days === 1) return { text:`1 giorno rimasto`,        urgent:true,  ms:diff };
+  if (hours > 0)  return { text:`${hours}h ${mins}m`,     urgent:true,  ms:diff };
+  return           { text:`${mins} min rimasti`,            urgent:true,  ms:diff };
 }
 
 function getState(res) {
-  const now = new Date();
-  const periodKey = getPeriodKey(res.frequency, now);
-  const periodEnd = getPeriodEnd(res.frequency, now);
-  const count     = getCount(res.id, periodKey);
-  const isDone    = count >= res.target;
-  const timer     = formatTimeLeft(periodEnd);
-  return { periodKey, periodEnd, count, isDone, timer };
+  const now = new Date(), pk = getPeriodKey(res.frequency, now), pe = getPeriodEnd(res.frequency, now);
+  const count = getCount(res.id, pk), isDone = count >= res.target, timer = formatTimeLeft(pe);
+  return { periodKey: pk, periodEnd: pe, count, isDone, timer };
 }
 
 // ── Filter ────────────────────────────────────────────────────────────────────
-
 let currentFilter = 'all';
+let catFilter     = null; // null = all cats
 
 function isUrgent(res) {
   const { isDone, timer } = getState(res);
   return !isDone && timer.ms > 0 && timer.ms < 86400000 * 2;
 }
 
-function matchFilter(res) {
-  if (isHidden(res.id) && !customResolutions.find(r => r.id === res.id)) return false;
+function visible(res) {
+  if (isHidden(res.id)) return false;
+  if (catFilter && res.category !== catFilter) return false;
   const { isDone } = getState(res);
   switch(currentFilter) {
     case 'pending':  return !isDone;
@@ -555,36 +499,62 @@ function matchFilter(res) {
   }
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
+// ── Render legend ─────────────────────────────────────────────────────────────
+function renderLegend() {
+  const el = document.getElementById('legend');
+  el.innerHTML = '';
+  Object.entries(CATEGORIES).forEach(([key, cat]) => {
+    const pill = document.createElement('div');
+    pill.className = `legend-pill ${catFilter && catFilter !== key ? 'dim' : ''}`;
+    pill.style.background = cat.color;
+    pill.innerHTML = `<div class="legend-dot" style="background:rgba(0,0,0,0.25)"></div>${cat.emoji} ${cat.label}`;
+    pill.addEventListener('click', () => {
+      catFilter = catFilter === key ? null : key;
+      renderLegend(); render();
+    });
+    el.appendChild(pill);
+  });
+}
 
-const PRESET_HOURS = [48, 24, 3, 1];
-const PRESET_LABELS = { 48:'2 giorni prima', 24:'1 giorno prima', 3:'3 ore prima', 1:'1 ora prima' };
-
+// ── Build card ────────────────────────────────────────────────────────────────
 function buildCard(res) {
   const { periodKey, count, isDone, timer } = getState(res);
-  const pct = Math.min(1, count / res.target);
+  const pct   = Math.min(1, count / res.target);
   const prefs = getNotifPrefs(res.id);
+  const cat   = res.category || 'custom';
 
   const card = document.createElement('div');
   card.className = `card ${isDone ? 'is-done' : ''}`;
-  card.dataset.color = res.color;
+  card.dataset.cat = cat;
 
-  // Build notif options HTML
-  const optionsHTML = PRESET_HOURS.map(h => `
-    <label class="notif-option ${prefs.includes(h) ? 'selected' : ''}">
-      <input type="checkbox" data-hours="${h}" ${prefs.includes(h) ? 'checked' : ''}>
-      <span>${PRESET_LABELS[h]}</span>
-    </label>
-  `).join('');
+  // Settings panel: preset chips
+  const presetChipsHTML = PRESETS.map(p => `
+    <div class="preset-chip ${prefs.includes(p.mins) ? 'on' : ''}" data-mins="${p.mins}">
+      <span>${p.label}</span>
+    </div>`).join('');
+
+  // Hour options 0–48 + minutes 00/15/30/45
+  const hourOpts  = Array.from({length:49}, (_,i) => `<option value="${i}">${String(i).padStart(2,'0')}</option>`).join('');
+  const minOpts   = [0,15,30,45].map(m => `<option value="${m}">${String(m).padStart(2,'0')}</option>`).join('');
+
+  // Custom time tags (anything not in PRESETS)
+  const presetMins = PRESETS.map(p => p.mins);
+  const customTags = prefs.filter(m => !presetMins.includes(m));
+  const customTagsHTML = customTags.map(m => `
+    <div class="custom-time-tag" data-mins="${m}">
+      ${formatMins(m)}
+      <button aria-label="rimuovi">×</button>
+    </div>`).join('');
 
   card.innerHTML = `
     <div class="card-top">
-      <div class="card-top-left">
+      <div class="card-badges">
         <div class="card-freq-pill">${FREQ_LABEL[res.frequency]}</div>
+        <div class="card-cat-pill">${CATEGORIES[cat]?.emoji || '⭐'} ${CATEGORIES[cat]?.label || 'Custom'}</div>
       </div>
       <div class="card-top-right">
-        <button class="card-settings-btn" title="Impostazioni">⚙️</button>
-        <button class="card-check ${isDone?'done':''}">${isDone ? '✓' : '○'}</button>
+        <button class="card-settings-btn" aria-label="impostazioni">⚙️</button>
+        <button class="card-check ${isDone?'done':''}">${isDone?'✓':'○'}</button>
       </div>
     </div>
     <span class="card-emoji">${res.emoji}</span>
@@ -597,77 +567,106 @@ function buildCard(res) {
         <div class="progress-count">${count}/${res.target}</div>
       </div>
     </div>
-    ${res.target > 1 ? `<button class="card-multi-btn ${isDone?'done':''}">${isDone ? `✓ Fatto! (${count}/${res.target})` : `Segna completamento · ${count}/${res.target}`}</button>` : ''}
+    ${res.target > 1 ? `<button class="card-multi-btn">${isDone ? `✓ Fatto! (${count}/${res.target})` : `Segna completamento · ${count}/${res.target}`}</button>` : ''}
     ${count > 0 ? `<button class="btn-undo">↩ annulla</button>` : ''}
 
-    <!-- Settings Panel -->
     <div class="card-settings-panel">
-      <div class="settings-section-label">🔔 Notificami</div>
-      <div class="notif-options">${optionsHTML}</div>
-      <div class="custom-notif-row">
-        <label>Personalizzato:</label>
-        <input class="custom-notif-input" type="number" min="1" max="720" placeholder="ore" id="custom-${res.id}">
-        <span style="font-size:12px;font-weight:600;color:#111;">ore prima</span>
+      <span class="settings-label">🔔 Notificami…</span>
+      <div class="preset-chips">${presetChipsHTML}</div>
+      ${customTagsHTML ? `<div class="custom-times">${customTagsHTML}</div>` : '<div class="custom-times"></div>'}
+      <div class="time-picker-row">
+        <span class="time-picker-label">Orario custom:</span>
+        <div class="time-selects">
+          <select class="time-sel" id="tph-${res.id}"><option value="0" disabled selected>ore</option>${hourOpts}</select>
+          <span class="time-colon">:</span>
+          <select class="time-sel" id="tpm-${res.id}">${minOpts}</select>
+          <button class="btn-add-time" id="tpadd-${res.id}">+ Aggiungi</button>
+        </div>
       </div>
       <button class="btn-delete">🗑️ Elimina proposito</button>
     </div>
   `;
 
-  // Check button
+  // ── check button
   card.querySelector('.card-check').addEventListener('click', () => {
     if (res.target === 1 && !isDone) { setCount(res.id, periodKey, 1); celebrate(); }
   });
 
-  // Multi target
-  const multiBtn = card.querySelector('.card-multi-btn');
-  if (multiBtn) multiBtn.addEventListener('click', () => {
+  // ── multi
+  const mb = card.querySelector('.card-multi-btn');
+  if (mb) mb.addEventListener('click', () => {
     if (isDone) return;
-    setCount(res.id, periodKey, count + 1);
-    if (count + 1 >= res.target) celebrate();
+    setCount(res.id, periodKey, count+1);
+    if (count+1 >= res.target) celebrate();
   });
 
-  // Undo
-  const undoBtn = card.querySelector('.btn-undo');
-  if (undoBtn) undoBtn.addEventListener('click', e => {
+  // ── undo
+  const ub = card.querySelector('.btn-undo');
+  if (ub) ub.addEventListener('click', e => { e.stopPropagation(); setCount(res.id, periodKey, count-1); });
+
+  // ── settings toggle
+  const sp  = card.querySelector('.card-settings-panel');
+  const sb  = card.querySelector('.card-settings-btn');
+  sb.addEventListener('click', e => {
     e.stopPropagation();
-    setCount(res.id, periodKey, count - 1);
+    const open = sp.classList.toggle('open');
+    sb.classList.toggle('open', open);
   });
 
-  // Settings toggle
-  const settingsBtn = card.querySelector('.card-settings-btn');
-  const settingsPanel = card.querySelector('.card-settings-panel');
-  settingsBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    const isOpen = settingsPanel.classList.toggle('open');
-    settingsBtn.classList.toggle('open', isOpen);
-  });
-
-  // Notif preset checkboxes
-  card.querySelectorAll('.notif-option input').forEach(input => {
-    input.addEventListener('change', () => {
-      const hours = parseInt(input.dataset.hours);
-      let current = getNotifPrefs(res.id);
-      if (input.checked) { if (!current.includes(hours)) current.push(hours); }
-      else { current = current.filter(h => h !== hours); }
-      setNotifPrefs(res.id, current);
-      input.parentElement.classList.toggle('selected', input.checked);
+  // ── preset chips
+  card.querySelectorAll('.preset-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const m = parseInt(chip.dataset.mins);
+      let cur = getNotifPrefs(res.id);
+      if (cur.includes(m)) cur = cur.filter(x => x !== m);
+      else cur = [...cur, m];
+      setNotifPrefs(res.id, cur);
+      chip.classList.toggle('on', cur.includes(m));
     });
   });
 
-  // Custom hours input
-  const customInput = card.querySelector(`#custom-${res.id}`);
-  customInput.addEventListener('change', () => {
-    const h = parseInt(customInput.value);
-    if (!h || h < 1) return;
-    const current = getNotifPrefs(res.id);
-    if (!current.includes(h)) {
-      current.push(h);
-      setNotifPrefs(res.id, current);
-    }
-    customInput.value = '';
+  // ── custom time remove tags
+  card.querySelectorAll('.custom-time-tag button').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const m = parseInt(btn.closest('.custom-time-tag').dataset.mins);
+      const cur = getNotifPrefs(res.id).filter(x => x !== m);
+      setNotifPrefs(res.id, cur);
+      btn.closest('.custom-time-tag').remove();
+    });
   });
 
-  // Delete
+  // ── custom time picker: confirm button
+  card.querySelector(`#tpadd-${res.id}`).addEventListener('click', e => {
+    e.stopPropagation();
+    const hSel = card.querySelector(`#tph-${res.id}`);
+    const mSel = card.querySelector(`#tpm-${res.id}`);
+    const h    = parseInt(hSel.value);
+    const m    = parseInt(mSel.value);
+    const total = h * 60 + m;
+    if (total <= 0) { hSel.focus(); return; }
+    const cur = getNotifPrefs(res.id);
+    if (!cur.includes(total)) {
+      const updated = [...cur, total];
+      setNotifPrefs(res.id, updated);
+      // Add tag to DOM immediately
+      const tagsEl = card.querySelector('.custom-times');
+      const tag = document.createElement('div');
+      tag.className = 'custom-time-tag';
+      tag.dataset.mins = total;
+      tag.innerHTML = `${formatMins(total)} <button aria-label="rimuovi">×</button>`;
+      tag.querySelector('button').addEventListener('click', () => {
+        const c2 = getNotifPrefs(res.id).filter(x => x !== total);
+        setNotifPrefs(res.id, c2);
+        tag.remove();
+      });
+      tagsEl.appendChild(tag);
+    }
+    // Reset selects
+    hSel.value = '0'; mSel.value = '0';
+  });
+
+  // ── delete
   card.querySelector('.btn-delete').addEventListener('click', e => {
     e.stopPropagation();
     if (confirm(`Eliminare "${res.text}"?`)) deleteResolution(res.id);
@@ -676,125 +675,95 @@ function buildCard(res) {
   return card;
 }
 
+// ── Render ────────────────────────────────────────────────────────────────────
 function render() {
   const list = document.getElementById('list');
   list.innerHTML = '';
-  const res = allResolutions();
+  const all = allResolutions().filter(r => !isHidden(r.id));
+  document.getElementById('sumDone').textContent    = all.filter(r => getState(r).isDone).length;
+  document.getElementById('sumPending').textContent = all.filter(r => !getState(r).isDone).length;
+  document.getElementById('sumUrgent').textContent  = all.filter(r => isUrgent(r)).length;
 
-  const total  = res.filter(r => !isHidden(r.id)).length;
-  const done   = res.filter(r => !isHidden(r.id) && getState(r).isDone).length;
-  const urgent = res.filter(r => !isHidden(r.id) && isUrgent(r)).length;
-  document.getElementById('sumDone').textContent    = done;
-  document.getElementById('sumPending').textContent = total - done;
-  document.getElementById('sumUrgent').textContent  = urgent;
-
-  const visible = res.filter(matchFilter);
-
-  if (!visible.length) {
+  const vis = allResolutions().filter(r => visible(r));
+  if (!vis.length) {
     list.innerHTML = `<div class="empty"><div class="empty-emoji">🎉</div><h2>Tutto fatto!</h2><p>Siete meravigliosi 💕</p></div>`;
     return;
   }
-
-  visible.sort((a, b) => {
-    const aDone = getState(a).isDone, bDone = getState(b).isDone;
-    if (aDone !== bDone) return aDone ? 1 : -1;
+  vis.sort((a,b) => {
+    const ad = getState(a).isDone, bd = getState(b).isDone;
+    if (ad !== bd) return ad ? 1 : -1;
     return getState(a).timer.ms - getState(b).timer.ms;
   });
-
-  visible.forEach(r => list.appendChild(buildCard(r)));
+  vis.forEach(r => list.appendChild(buildCard(r)));
 }
 
 // ── Celebrate ─────────────────────────────────────────────────────────────────
-
 function celebrate() {
-  const burst = document.createElement('div');
-  burst.className = 'celeb-burst'; burst.textContent = '🎉';
-  document.body.appendChild(burst);
-  setTimeout(() => burst.remove(), 1300);
+  const b = document.createElement('div');
+  b.className = 'celeb-burst'; b.textContent = '🎉';
+  document.body.appendChild(b); setTimeout(() => b.remove(), 1300);
 }
 
-// ── Service Worker & Notifications ───────────────────────────────────────────
-
-let swReg = null;
-
+// ── Service Worker ────────────────────────────────────────────────────────────
 async function registerSW() {
   if (!('serviceWorker' in navigator)) return;
   try {
-    swReg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+    await navigator.serviceWorker.register('./sw.js', { scope: './' });
     navigator.serviceWorker.addEventListener('message', e => {
       if (e.data?.type === 'REQUEST_SCHEDULE') pushScheduleToSW();
     });
-  } catch(err) { console.warn('SW failed:', err); }
+  } catch(e) { console.warn('SW error:', e); }
 }
 
-function buildNotifSchedule() {
+function buildSchedule() {
   const items = [];
   allResolutions().forEach(res => {
     if (isHidden(res.id)) return;
     const { isDone, periodEnd } = getState(res);
     if (isDone) return;
-    const hoursPrefs = getNotifPrefs(res.id);
-
-    hoursPrefs.forEach(h => {
-      const fireAt = periodEnd.getTime() - h * 3600000;
+    getNotifPrefs(res.id).forEach(mins => {
+      const fireAt = periodEnd.getTime() - mins * 60000;
       if (fireAt <= Date.now()) return;
-
+      const h = Math.floor(mins/60), m = mins%60;
       let title, body;
-      if (h >= 48) {
-        title = `${res.emoji} Mancano ${h/24} giorni!`;
-        body  = `Ricordati: "${res.text}" — avete ancora tempo 💕`;
-      } else if (h >= 24) {
-        title = `${res.emoji} Domani scade un proposito!`;
-        body  = `Ricordati: "${res.text}" — avete ancora oggi per farlo 💕`;
-      } else if (h >= 3) {
-        title = `${res.emoji} Mancano ${h} ore!`;
-        body  = `"${res.text}" — sbrigatevi, il tempo stringe! ⏳`;
-      } else {
-        title = `${res.emoji} Ultima ora!`;
-        body  = `"${res.text}" scade tra meno di un'ora! 🚨`;
-      }
-
-      items.push({ title, body, tag: `${res.id}-${h}`, fireAt });
+      if (mins >= 2880)     { title = `${res.emoji} Mancano 2 giorni!`;       body = `Ricordati: "${res.text}" — avete ancora tempo 💕`; }
+      else if (mins >= 1440){ title = `${res.emoji} Domani scade!`;            body = `"${res.text}" — avete ancora oggi 💕`; }
+      else if (mins >= 60)  { title = `${res.emoji} Mancano ${h}h${m?` ${m}m`:''}!`; body = `"${res.text}" — sbrigatevi ⏳`; }
+      else                  { title = `${res.emoji} Ultimi ${mins} minuti!`;   body = `"${res.text}" — adesso o mai più! 🚨`; }
+      items.push({ title, body, tag: `${res.id}-${mins}`, fireAt });
     });
   });
   return items;
 }
 
-function pushScheduleToSW() {
+async function pushScheduleToSW() {
   if (!canNotify()) return;
-  const items = buildNotifSchedule();
-  const send = (sw) => sw.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', items });
-  if (swReg?.active) send(swReg.active);
-  else if (navigator.serviceWorker?.controller) send(navigator.serviceWorker.controller);
+  const items = buildSchedule();
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    if (reg.active) reg.active.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', items });
+  } catch(e) { console.warn('SW push error:', e); }
 }
 
-function canNotify() {
-  return 'Notification' in window && Notification.permission === 'granted';
-}
+function canNotify() { return 'Notification' in window && Notification.permission === 'granted'; }
 
 async function requestNotifications() {
-  if (!('Notification' in window)) { alert('Installa l\'app sulla schermata home per ricevere notifiche.'); return; }
+  if (!('Notification' in window)) { alert('Installa l\'app sulla schermata home per le notifiche.'); return; }
   const perm = await Notification.requestPermission();
   updateNotifUI();
   if (perm === 'granted') pushScheduleToSW();
-  else if (perm === 'denied') alert('Notifiche bloccate. Vai nelle impostazioni del browser per riattivarle.');
+  else if (perm === 'denied') alert('Notifiche bloccate. Abilitale nelle impostazioni del browser.');
 }
 
 function updateNotifUI() {
-  const btn    = document.getElementById('notifBtn');
-  const banner = document.getElementById('notifBanner');
+  const btn = document.getElementById('notifBtn'), banner = document.getElementById('notifBanner');
   if (!('Notification' in window)) { banner.classList.add('hidden'); return; }
-  if (canNotify()) {
-    btn.textContent = '🔔'; btn.classList.add('enabled'); banner.classList.add('hidden');
-  } else if (Notification.permission === 'denied') {
-    btn.textContent = '🔕'; btn.classList.remove('enabled'); banner.classList.add('hidden');
-  } else {
-    btn.textContent = '🔔'; btn.classList.remove('enabled'); banner.classList.remove('hidden');
-  }
+  if (canNotify()) { btn.textContent='🔔'; btn.classList.add('enabled'); banner.classList.add('hidden'); }
+  else if (Notification.permission==='denied') { btn.textContent='🔕'; btn.classList.remove('enabled'); banner.classList.add('hidden'); }
+  else { btn.textContent='🔔'; btn.classList.remove('enabled'); banner.classList.remove('hidden'); }
 }
 
 // ── PWA Install ───────────────────────────────────────────────────────────────
-
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault(); deferredPrompt = e;
@@ -805,81 +774,82 @@ document.getElementById('installBanner').addEventListener('click', async () => {
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
   deferredPrompt = null;
-  if (outcome === 'accepted') document.getElementById('installBanner').classList.add('hidden');
+  if (outcome==='accepted') document.getElementById('installBanner').classList.add('hidden');
 });
 
-// ── Modal: add resolution ─────────────────────────────────────────────────────
-
-const EMOJI_LIST = ['💕','🌄','🍽️','🎲','💬','📵','🌙','📺','🎬','💼','🏃','🧘','📚','🎵','🌿','☕','🎨','🏠','✈️','🎁','🥂','🤝','🌸','⭐','🎯','🏋️','🧁','🎸'];
-
+// ── Modal ─────────────────────────────────────────────────────────────────────
+const EMOJI_LIST = ['💕','❤️','🌄','🍽️','🎲','💬','📵','🌙','📺','🎬','💼','🏃','🧘','📚','🎵','🌿','☕','🎨','🏠','✈️','🎁','🥂','🤝','🌸','⭐','🎯','🎸','🧁'];
 let selectedEmoji = '💕';
+let selectedCat   = 'custom';
 
 function initModal() {
-  const grid = document.getElementById('emojiGrid');
-  EMOJI_LIST.forEach(e => {
-    const div = document.createElement('div');
-    div.className = `emoji-opt ${e === selectedEmoji ? 'selected' : ''}`;
-    div.textContent = e;
-    div.addEventListener('click', () => {
-      selectedEmoji = e;
-      grid.querySelectorAll('.emoji-opt').forEach(d => d.classList.remove('selected'));
-      div.classList.add('selected');
+  // Category selector
+  const cs = document.getElementById('catSelector');
+  Object.entries(CATEGORIES).forEach(([key, cat]) => {
+    const btn = document.createElement('button');
+    btn.className = `cat-opt ${key===selectedCat?'selected':''}`;
+    btn.style.background = cat.color;
+    btn.dataset.key = key;
+    btn.innerHTML = `${cat.emoji}<br>${cat.label}`;
+    btn.addEventListener('click', () => {
+      selectedCat = key;
+      cs.querySelectorAll('.cat-opt').forEach(b => b.classList.toggle('selected', b.dataset.key===key));
     });
-    grid.appendChild(div);
+    cs.appendChild(btn);
+  });
+
+  // Emoji grid
+  const eg = document.getElementById('emojiGrid');
+  EMOJI_LIST.forEach(e => {
+    const d = document.createElement('div');
+    d.className = `emoji-opt ${e===selectedEmoji?'selected':''}`;
+    d.textContent = e;
+    d.addEventListener('click', () => {
+      selectedEmoji = e;
+      eg.querySelectorAll('.emoji-opt').forEach(x => x.classList.toggle('selected', x.textContent===e));
+    });
+    eg.appendChild(d);
   });
 }
 
-document.getElementById('fab').addEventListener('click', () => {
-  document.getElementById('modalOverlay').classList.add('open');
-});
-
+document.getElementById('fab').addEventListener('click', () => document.getElementById('modalOverlay').classList.add('open'));
 document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('modalOverlay'))
-    document.getElementById('modalOverlay').classList.remove('open');
+  if (e.target === document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('open');
 });
 
 document.getElementById('btnSave').addEventListener('click', async () => {
   const text = document.getElementById('newText').value.trim();
   if (!text) { alert('Inserisci una descrizione'); return; }
-  const note  = document.getElementById('newNote').value.trim();
-  const freq  = document.getElementById('newFreq').value;
-  const target = Math.max(1, parseInt(document.getElementById('newTarget').value) || 1);
-
-  const newRes = {
-    id: 'c-' + Date.now(),
-    emoji: selectedEmoji,
-    text, note: note || null,
-    frequency: freq, target,
-    custom: true,
-  };
-
-  await addCustomResolution(newRes);
+  await addCustom({
+    id:        'c-' + Date.now(),
+    emoji:     selectedEmoji,
+    text,
+    note:      document.getElementById('newNote').value.trim() || null,
+    frequency: document.getElementById('newFreq').value,
+    target:    Math.max(1, parseInt(document.getElementById('newTarget').value)||1),
+    category:  selectedCat,
+    custom:    true,
+  });
   document.getElementById('modalOverlay').classList.remove('open');
   document.getElementById('newText').value = '';
   document.getElementById('newNote').value = '';
   document.getElementById('newTarget').value = '1';
   document.getElementById('newFreq').value = 'weekly';
-  selectedEmoji = '💕';
-  document.querySelectorAll('.emoji-opt').forEach(d => d.classList.toggle('selected', d.textContent === '💕'));
 });
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-
+// ── Tabs & events ─────────────────────────────────────────────────────────────
 document.getElementById('tabs').addEventListener('click', e => {
-  const btn = e.target.closest('.tab');
-  if (!btn) return;
+  const btn = e.target.closest('.tab'); if (!btn) return;
   currentFilter = btn.dataset.filter;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  render();
+  btn.classList.add('active'); render();
 });
-
 document.getElementById('notifBtn').addEventListener('click', requestNotifications);
 document.getElementById('notifBanner').addEventListener('click', requestNotifications);
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-
 initModal();
+renderLegend();
 await registerSW();
 await loadAll();
 updateNotifUI();

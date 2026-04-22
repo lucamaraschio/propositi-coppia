@@ -1,4 +1,4 @@
-const CACHE = 'propositi-v3';
+const CACHE = 'propositi-v4';
 const ASSETS = ['./', './index.html', './icon-192.png', './icon-512.png', './manifest.json'];
 
 // ── Install: cache app shell ──────────────────────────────────────────────────
