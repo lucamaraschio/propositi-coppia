@@ -11,7 +11,9 @@ initializeApp({
 const db        = getDatabase();
 const messaging = getMessaging();
 
-// ── Default resolutions (stessa lista del client) ─────────────────────────────
+const TEST_MODE = process.env.TEST_MODE === 'true';
+
+// ── Default resolutions ───────────────────────────────────────────────────────
 const DEFAULT_RESOLUTIONS = [
   { id:'r01', emoji:'💕', text:'Scopare una volta a settimana',               frequency:'weekly',    target:1 },
   { id:'r02', emoji:'📵', text:'Giornata senza telefono quando siamo a casa', frequency:'monthly',   target:2 },
@@ -26,7 +28,7 @@ const DEFAULT_RESOLUTIONS = [
 ];
 
 const DEFAULT_MINS = [1440, 180, 60];
-const WINDOW_MS    = 35 * 60 * 1000; // ±35 minuti
+const WINDOW_MS    = 35 * 60 * 1000;
 
 // ── Period helpers ────────────────────────────────────────────────────────────
 function monday(d) {
@@ -56,10 +58,28 @@ function getPeriodEnd(freq, now = new Date()) {
   if (freq === 'quarterly') return new Date(y, (Math.floor(m / 3) + 1) * 3, 1);
 }
 
+// ── Send FCM ──────────────────────────────────────────────────────────────────
+async function sendNotification(tokens, title, body) {
+  const response = await messaging.sendEachForMulticast({
+    tokens,
+    notification: { title, body },
+    webpush: {
+      notification: {
+        icon:               'https://lucamaraschio.github.io/propositi-coppia/icon-192.png',
+        badge:              'https://lucamaraschio.github.io/propositi-coppia/icon-192.png',
+        vibrate:            [300, 150, 300],
+        requireInteraction: true,
+      },
+      fcmOptions: { link: 'https://lucamaraschio.github.io/propositi-coppia/' },
+    },
+  });
+  return response;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   const now = new Date();
-  console.log(`▶ Esecuzione: ${now.toISOString()}`);
+  console.log(`▶ Esecuzione: ${now.toISOString()} ${TEST_MODE ? '[TEST MODE]' : ''}`);
 
   const [propSnap, customSnap, tokensSnap, prefsSnap, sentSnap] = await Promise.all([
     db.ref('propositi').get(),
@@ -69,16 +89,29 @@ async function main() {
     db.ref('notif_sent').get(),
   ]);
 
-  const propData   = propSnap.exists()   ? propSnap.val()                             : {};
-  const customData = customSnap.exists() ? Object.values(customSnap.val())            : [];
-  const tokensRaw  = tokensSnap.exists() ? Object.values(tokensSnap.val())            : [];
-  const prefsData  = prefsSnap.exists()  ? prefsSnap.val()                            : {};
-  const sentData   = sentSnap.exists()   ? sentSnap.val()                             : {};
+  const propData   = propSnap.exists()   ? propSnap.val()                           : {};
+  const customData = customSnap.exists() ? Object.values(customSnap.val())          : [];
+  const tokensRaw  = tokensSnap.exists() ? Object.values(tokensSnap.val())          : [];
+  const prefsData  = prefsSnap.exists()  ? prefsSnap.val()                          : {};
+  const sentData   = sentSnap.exists()   ? sentSnap.val()                           : {};
 
   const tokens = tokensRaw.map(t => t.token).filter(Boolean);
-  if (tokens.length === 0) { console.log('Nessun token FCM salvato.'); return; }
+  if (tokens.length === 0) { console.log('Nessun token FCM salvato.'); process.exit(0); }
   console.log(`Token trovati: ${tokens.length}`);
 
+  // ── TEST MODE: manda una notifica di prova immediata ─────────────────────
+  if (TEST_MODE) {
+    console.log('Invio notifica di test...');
+    await sendNotification(
+      tokens,
+      '🧪 Test notifiche funzionante!',
+      'Le notifiche di Propositi di Coppia sono attive e funzionanti 💕'
+    );
+    console.log('✅ Notifica di test inviata!');
+    process.exit(0);
+  }
+
+  // ── NORMALE: controlla scadenze ───────────────────────────────────────────
   const allRes = [...DEFAULT_RESOLUTIONS, ...customData];
   let sent = 0;
 
@@ -86,62 +119,29 @@ async function main() {
     const periodKey = getPeriodKey(res.frequency, now);
     const periodEnd = getPeriodEnd(res.frequency, now);
     const count     = propData[res.id]?.[periodKey] || 0;
-    if (count >= res.target) continue; // già completato
+    if (count >= res.target) continue;
 
     const resPrefs = Array.isArray(prefsData[res.id]) ? prefsData[res.id] : DEFAULT_MINS;
 
     for (const mins of resPrefs) {
       const fireAt = periodEnd.getTime() - mins * 60000;
-      if (Math.abs(Date.now() - fireAt) > WINDOW_MS) continue; // non è questa ora
+      if (Math.abs(Date.now() - fireAt) > WINDOW_MS) continue;
 
-      // Chiave univoca per evitare doppio invio
       const sentKey = `${res.id}_${mins}_${periodKey}`.replace(/[.#$[\]]/g, '_');
       if (sentData[sentKey]) { console.log(`  Già inviato: ${sentKey}`); continue; }
 
-      // Costruisci testo notifica
       const h = Math.floor(mins / 60), m = mins % 60;
       let title, body;
-      if (mins >= 2880)      { title = `${res.emoji} Mancano 2 giorni!`;                         body = `Ricordati: "${res.text}" — avete ancora tempo 💕`; }
-      else if (mins >= 1440) { title = `${res.emoji} Domani scade!`;                              body = `"${res.text}" — avete ancora oggi per farlo 💕`; }
-      else if (mins >= 60)   { title = `${res.emoji} Mancano ${h}h${m ? ` e ${m}m` : ''}!`;     body = `"${res.text}" — sbrigatevi, il tempo stringe ⏳`; }
-      else                   { title = `${res.emoji} Ultimi ${mins} minuti!`;                     body = `"${res.text}" — adesso o mai più! 🚨`; }
+      if (mins >= 2880)      { title = `${res.emoji} Mancano 2 giorni!`;                       body = `Ricordati: "${res.text}" — avete ancora tempo 💕`; }
+      else if (mins >= 1440) { title = `${res.emoji} Domani scade!`;                            body = `"${res.text}" — avete ancora oggi per farlo 💕`; }
+      else if (mins >= 60)   { title = `${res.emoji} Mancano ${h}h${m ? ` e ${m}m` : ''}!`;   body = `"${res.text}" — sbrigatevi, il tempo stringe ⏳`; }
+      else                   { title = `${res.emoji} Ultimi ${mins} minuti!`;                   body = `"${res.text}" — adesso o mai più! 🚨`; }
 
       try {
-        const response = await messaging.sendEachForMulticast({
-          tokens,
-          notification: { title, body },
-          webpush: {
-            notification: {
-              icon:              'https://lucamaraschio.github.io/propositi-coppia/icon-192.png',
-              badge:             'https://lucamaraschio.github.io/propositi-coppia/icon-192.png',
-              vibrate:           [300, 150, 300],
-              requireInteraction: true,
-            },
-            fcmOptions: {
-              link: 'https://lucamaraschio.github.io/propositi-coppia/',
-            },
-          },
-        });
-
+        await sendNotification(tokens, title, body);
         await db.ref(`notif_sent/${sentKey}`).set(Date.now());
         sent++;
         console.log(`  ✓ Inviata: ${title}`);
-
-        // Rimuovi token non validi
-        const invalidTokenKeys = [];
-        response.responses.forEach((resp, i) => {
-          if (!resp.success) {
-            const code = resp.error?.code;
-            if (code === 'messaging/registration-token-not-registered' ||
-                code === 'messaging/invalid-registration-token') {
-              invalidTokenKeys.push(tokensRaw[i]?.key);
-            }
-          }
-        });
-        for (const key of invalidTokenKeys.filter(Boolean)) {
-          await db.ref(`fcm_tokens/${key}`).remove();
-          console.log(`  ✗ Token rimosso (non valido)`);
-        }
       } catch (e) {
         console.error(`  Errore FCM per ${res.id}:`, e.message);
       }
