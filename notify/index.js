@@ -28,7 +28,7 @@ const DEFAULT_RESOLUTIONS = [
 ];
 
 const DEFAULT_MINS = [1440, 180, 60];
-const WINDOW_MS    = 35 * 60 * 1000;
+const WINDOW_MS    = 65 * 60 * 1000; // finestra di 65 min: cattura tutto il run precedente
 
 // ── Period helpers ────────────────────────────────────────────────────────────
 function monday(d) {
@@ -95,9 +95,10 @@ async function main() {
   const prefsData  = prefsSnap.exists()  ? prefsSnap.val()                          : {};
   const sentData   = sentSnap.exists()   ? sentSnap.val()                           : {};
 
-  const tokens = tokensRaw.map(t => t.token).filter(Boolean);
+  // Deduplica token (possono esserci duplicati se l'app è stata aperta su browser diversi)
+  const tokens = [...new Set(tokensRaw.map(t => t.token).filter(Boolean))];
   if (tokens.length === 0) { console.log('Nessun token FCM salvato.'); process.exit(0); }
-  console.log(`Token trovati: ${tokens.length}`);
+  console.log(`Token unici trovati: ${tokens.length}`);
 
   // ── TEST MODE: manda una notifica di prova immediata ─────────────────────
   if (TEST_MODE) {
