@@ -573,16 +573,18 @@ async function registerSW() {
 }
 
 async function subscribeFCM() {
-  if (!swReg) return;
   try {
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+    // Aspetta che il SW sia pronto (non solo registrato)
+    const reg = await navigator.serviceWorker.ready;
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
     if (!token) { console.warn('Nessun token FCM'); return; }
-    // Salva token in Firebase con chiave basata su hash
     const hash = await hashStr(token);
     await set(ref(db, `fcm_tokens/${hash}`), { token, updatedAt: Date.now() });
     console.log('Token FCM salvato ✓');
+    return true;
   } catch(e) {
     console.warn('FCM token error:', e);
+    return false;
   }
 }
 
@@ -596,12 +598,19 @@ function canNotify() { return 'Notification' in window && Notification.permissio
 
 async function requestNotifications() {
   if (!('Notification' in window)) { alert('Installa l\'app sulla schermata home per le notifiche.'); return; }
+  if (Notification.permission === 'denied') {
+    alert('Notifiche bloccate. Vai nelle impostazioni del telefono > Safari/Chrome > Notifiche per abilitarle.');
+    return;
+  }
+  const btn = document.getElementById('notifBtn');
+  btn.textContent = '⏳';
   const perm = await Notification.requestPermission();
   updateNotifUI();
-  if (perm==='granted') {
-    await subscribeFCM();
-  } else if (perm==='denied') {
-    alert('Notifiche bloccate. Vai nelle impostazioni del browser per abilitarle.');
+  if (perm === 'granted') {
+    btn.textContent = '⏳';
+    const ok = await subscribeFCM();
+    btn.textContent = ok ? '✅' : '⚠️';
+    setTimeout(() => updateNotifUI(), 2000);
   }
 }
 
@@ -610,7 +619,8 @@ function updateNotifUI() {
   if (!('Notification' in window)) { banner.classList.add('hidden'); return; }
   if (canNotify()) {
     btn.textContent='🔔'; btn.classList.add('enabled'); banner.classList.add('hidden');
-    subscribeFCM(); // rinnova token se già autorizzato
+    // Rinnova token dopo che il SW è pronto (piccolo delay per sicurezza)
+    setTimeout(() => subscribeFCM(), 1500);
   } else if (Notification.permission==='denied') {
     btn.textContent='🔕'; btn.classList.remove('enabled'); banner.classList.add('hidden');
   } else {
